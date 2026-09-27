@@ -1,0 +1,183 @@
+/* Estilos Globales */
+.root {
+    -fx-font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+    -fx-base: #f8fafc;
+    -fx-background-color: #f1f5f9;
+}
+
+.main-container {
+    -fx-background-color: #f1f5f9;
+}
+
+/* Tarjetas y Contenedores Base */
+.card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.04), 8, 0, 0, 2);
+}
+
+.header-card {
+    -fx-background-color: linear-gradient(to right, #ffffff, #f8fafc);
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1px;
+}
+
+/* Encabezados */
+.header-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.header-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #64748b;
+}
+
+.section-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #334155;
+}
+
+.filter-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #64748b;
+}
+
+/* Campos de Texto y Entradas */
+.input-field, .combo-field, .date-field {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px 10px;
+    -fx-font-size: 13px;
+}
+
+.input-field:focused, .combo-field:focused, .date-field:focused {
+    -fx-border-color: #2563eb;
+    -fx-background-color: #ffffff;
+}
+
+.search-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 14px;
+    -fx-font-size: 14px;
+}
+
+.search-field:focused {
+    -fx-border-color: #2563eb;
+    -fx-effect: dropshadow(three-pass-box, rgba(37,99,235,0.2), 5, 0, 0, 0);
+}
+
+/* Botones */
+.btn-primary {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.btn-secondary {
+    -fx-background-color: #e2e8f0;
+    -fx-text-fill: #334155;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 14px;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #cbd5e1;
+}
+
+/* Lista de Autocompletado */
+.autocomplete-list {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.autocomplete-list .list-cell:hover {
+    -fx-background-color: #eff6ff;
+    -fx-text-fill: #2563eb;
+}
+
+/* Tabla de Resultados */
+.custom-table {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.custom-table .column-header-background {
+    -fx-background-color: #f8fafc;
+}
+
+.custom-table .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: 0 0 1px 0 #e2e8f0;
+    -fx-padding: 10px 5px;
+}
+
+.custom-table .column-header .label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #475569;
+    -fx-font-size: 12px;
+}
+
+.custom-table .table-row-cell {
+    -fx-background-color: #ffffff;
+    -fx-border-color: 0 0 1px 0 #f1f5f9;
+    -fx-padding: 4px;
+}
+
+.custom-table .table-row-cell:hover {
+    -fx-background-color: #f8fafc;
+}
+
+.custom-table .table-row-cell:selected {
+    -fx-background-color: #eff6ff;
+    -fx-text-fill: #1e293b;
+}
+
+/* SplitPane desvinculado de bordes bruscos */
+.content-split {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.content-split .split-pane-divider {
+    -fx-background-color: transparent;
+    -fx-padding: 0 5px;
+}
+
+/* Nube de Palabras */
+.word-cloud-list {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.word-cloud-list .list-cell {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px 10px;
+    -fx-margin: 2px 0;
+    -fx-text-fill: #0f172a;
+    -fx-font-size: 12px;
+}
