@@ -47,6 +47,19 @@
             <version>0.8.15</version>
             <scope>compile</scope>
         </dependency>
+        <!-- Para leer archivos PDF -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+        <!-- Para leer archivos Word (.docx) -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.5</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

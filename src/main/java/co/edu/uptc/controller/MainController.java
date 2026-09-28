@@ -1,5 +1,9 @@
 package co.edu.uptc.controller;
 
+import java.io.File;
+import java.time.LocalDate;
+import java.util.List;
+
 import co.edu.uptc.model.SearchResult;
 import co.edu.uptc.model.WordStat;
 import co.edu.uptc.service.SearchEngineService;
@@ -7,12 +11,14 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
-
-import java.io.File;
-import java.time.LocalDate;
-import java.util.List;
 
 public class MainController {
 
@@ -84,9 +90,10 @@ public class MainController {
     @FXML
     public void onUploadFile() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos de Texto", "*.txt"));
-        File selectedFile = fileChooser.showOpenDialog(null);
-
+        fileChooser.getExtensionFilters().add(
+        new FileChooser.ExtensionFilter("Documentos Soportados (*.txt, *.pdf, *.docx)", "*.txt", "*.pdf", "*.docx")
+            );
+         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             try {
                 String author = txtAuthor != null && !txtAuthor.getText().isBlank() ? txtAuthor.getText() : "Anónimo";

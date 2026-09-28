@@ -1,17 +1,27 @@
 package co.edu.uptc.service;
 
+import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import co.edu.uptc.dto.DocumentDTO;
 import co.edu.uptc.mapper.DocumentMapper;
 import co.edu.uptc.mapper.TrieMapper;
-import co.edu.uptc.model.*;
+import co.edu.uptc.model.AVLTree;
+import co.edu.uptc.model.Document;
+import co.edu.uptc.model.DocumentMetadata;
+import co.edu.uptc.model.SearchResult;
+import co.edu.uptc.model.Trie;
+import co.edu.uptc.model.TrieNode;
+import co.edu.uptc.model.WordStat;
 import co.edu.uptc.repository.JsonIndexRepository;
 import co.edu.uptc.repository.XmlMetadataRepository;
 import co.edu.uptc.util.TextNormalizer;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.time.LocalDate;
-import java.util.*;
 
 public class SearchEngineService {
 
@@ -35,7 +45,7 @@ public class SearchEngineService {
     }
 
     public void indexFile(File file, String author, String category) throws Exception {
-        String content = Files.readString(file.toPath());
+        String content = co.edu.uptc.util.FileTextExtractor.extractText(file);
         String[] tokens = TextNormalizer.normalizeAndTokenize(content);
 
         String docId = UUID.randomUUID().toString();

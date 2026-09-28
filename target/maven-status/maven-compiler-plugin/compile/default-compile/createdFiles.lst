@@ -10,6 +10,7 @@ co\edu\uptc\model\AVLTree.class
 co\edu\uptc\model\Trie.class
 co\edu\uptc\repository\JsonIndexRepository.class
 co\edu\uptc\mapper\DocumentMapper.class
+co\edu\uptc\util\FileTextExtractor.class
 co\edu\uptc\model\Document.class
 co\edu\uptc\service\SearchEngineService.class
 co\edu\uptc\mapper\TrieMapper.class
