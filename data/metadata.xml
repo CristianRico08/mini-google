@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<documents>
+    <document id="298acae3-35a5-4cf3-a1f7-6f4ee56842da">
+        <title>DocumentoPrueba2.pdf</title>
+        <path>C:\Users\Usuario\Documents\DocumentoPrueba2.pdf</path>
+        <totalWords>172</totalWords>
+        <metadata>
+            <author>Carlos mendoza</author>
+            <category>Investigación</category>
+            <creationDate>2026-09-29</creationDate>
+        </metadata>
+    </document>
+    <document id="35389e15-8179-451e-8d5d-0429a1eed46a">
+        <title>DocumentoPrueba.docx</title>
+        <path>C:\Users\Usuario\Documents\DocumentoPrueba.docx</path>
+        <totalWords>179</totalWords>
+        <metadata>
+            <author>Ana Gomez</author>
+            <category>Reporte Técnico</category>
+            <creationDate>2026-09-29</creationDate>
+        </metadata>
+    </document>
+</documents>
