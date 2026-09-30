@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TextNormalizer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">avl</a> &gt; <a href="index.source.html" class="el_package">co.edu.uptc.util</a> &gt; <span class="el_source">TextNormalizer.java</span></div><h1>TextNormalizer.java</h1><pre class="source lang-java linenums">package co.edu.uptc.util;
+
+import java.text.Normalizer;
+
+<span class="nc" id="L5">public class TextNormalizer {</span>
+
+    public static String[] normalizeAndTokenize(String rawText) {
+<span class="fc bfc" id="L8" title="All 4 branches covered.">        if (rawText == null || rawText.isBlank()) {</span>
+<span class="fc" id="L9">            return new String[0];</span>
+        }
+
+<span class="fc" id="L12">        String normalized = Normalizer.normalize(rawText, Normalizer.Form.NFD);</span>
+<span class="fc" id="L13">        normalized = normalized.replaceAll(&quot;\\p{M}&quot;, &quot;&quot;);</span>
+<span class="fc" id="L14">        normalized = normalized.toLowerCase().replaceAll(&quot;[^a-z0-9\\s]&quot;, &quot; &quot;);</span>
+
+<span class="fc" id="L16">        return normalized.trim().split(&quot;\\s+&quot;);</span>
+    }
+
+    public static String normalizeWord(String word) {
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        if (word == null) return &quot;&quot;;</span>
+<span class="fc" id="L21">        String normalized = Normalizer.normalize(word, Normalizer.Form.NFD);</span>
+<span class="fc" id="L22">        return normalized.replaceAll(&quot;\\p{M}&quot;, &quot;&quot;).toLowerCase().replaceAll(&quot;[^a-z0-9]&quot;, &quot;&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

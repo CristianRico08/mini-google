@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DocumentMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">avl</a> &gt; <a href="index.source.html" class="el_package">co.edu.uptc.mapper</a> &gt; <span class="el_source">DocumentMapper.java</span></div><h1>DocumentMapper.java</h1><pre class="source lang-java linenums">package co.edu.uptc.mapper;
+
+import co.edu.uptc.dto.DocumentDTO;
+import co.edu.uptc.dto.DocumentMetadataDTO;
+import co.edu.uptc.model.Document;
+import co.edu.uptc.model.DocumentMetadata;
+
+import java.time.LocalDate;
+
+<span class="nc" id="L10">public class DocumentMapper {</span>
+
+    public static DocumentDTO toDTO(Document document) {
+<span class="fc bfc" id="L13" title="All 2 branches covered.">        if (document == null) return null;</span>
+<span class="fc" id="L14">        DocumentMetadataDTO metaDTO = null;</span>
+<span class="fc bfc" id="L15" title="All 2 branches covered.">        if (document.getMetadata() != null) {</span>
+<span class="fc" id="L16">            metaDTO = new DocumentMetadataDTO(</span>
+<span class="fc" id="L17">                document.getMetadata().author(),</span>
+<span class="fc" id="L18">                document.getMetadata().category(),</span>
+<span class="pc bpc" id="L19" title="1 of 2 branches missed.">                document.getMetadata().creationDate() != null ? document.getMetadata().creationDate().toString() : null</span>
+            );
+        }
+<span class="fc" id="L22">        return new DocumentDTO(document.getId(), document.getTitle(), document.getPath(), document.getTotalWords(), metaDTO);</span>
+    }
+
+    public static Document toDomain(DocumentDTO dto) {
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (dto == null) return null;</span>
+<span class="fc" id="L27">        DocumentMetadata meta = null;</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (dto.getMetadata() != null) {</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">            LocalDate date = dto.getMetadata().getCreationDate() != null ? LocalDate.parse(dto.getMetadata().getCreationDate()) : LocalDate.now();</span>
+<span class="fc" id="L30">            meta = new DocumentMetadata(dto.getMetadata().getAuthor(), dto.getMetadata().getCategory(), date);</span>
+        }
+<span class="fc" id="L32">        return new Document(dto.getId(), dto.getTitle(), dto.getPath(), dto.getTotalWords(), meta);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

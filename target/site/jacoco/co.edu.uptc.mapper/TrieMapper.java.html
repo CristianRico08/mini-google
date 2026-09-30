@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TrieMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">avl</a> &gt; <a href="index.source.html" class="el_package">co.edu.uptc.mapper</a> &gt; <span class="el_source">TrieMapper.java</span></div><h1>TrieMapper.java</h1><pre class="source lang-java linenums">package co.edu.uptc.mapper;
+
+import co.edu.uptc.dto.TrieDTO;
+import co.edu.uptc.dto.TrieNodeDTO;
+import co.edu.uptc.model.Trie;
+import co.edu.uptc.model.TrieNode;
+
+import java.util.Map;
+
+<span class="nc" id="L10">public class TrieMapper {</span>
+
+    public static TrieDTO toDTO(Trie trie) {
+<span class="fc bfc" id="L13" title="All 2 branches covered.">        if (trie == null) return null;</span>
+<span class="fc" id="L14">        return new TrieDTO(toNodeDTO(trie.getRoot()));</span>
+    }
+
+    private static TrieNodeDTO toNodeDTO(TrieNode node) {
+<span class="pc bpc" id="L18" title="1 of 2 branches missed.">        if (node == null) return null;</span>
+<span class="fc" id="L19">        TrieNodeDTO dto = new TrieNodeDTO();</span>
+<span class="fc" id="L20">        dto.setEndOfWord(node.isEndOfWord());</span>
+<span class="fc" id="L21">        dto.setDocumentFrequencies(node.getDocumentFrequencies());</span>
+
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        for (Map.Entry&lt;Character, TrieNode&gt; entry : node.getChildren().entrySet()) {</span>
+<span class="fc" id="L24">            dto.getChildren().put(String.valueOf(entry.getKey()), toNodeDTO(entry.getValue()));</span>
+<span class="fc" id="L25">        }</span>
+<span class="fc" id="L26">        return dto;</span>
+    }
+
+    public static Trie toDomain(TrieDTO dto) {
+<span class="fc" id="L30">        Trie trie = new Trie();</span>
+<span class="pc bpc" id="L31" title="1 of 4 branches missed.">        if (dto != null &amp;&amp; dto.getRoot() != null) {</span>
+<span class="fc" id="L32">            populateNodeDomain(trie.getRoot(), dto.getRoot());</span>
+        }
+<span class="fc" id="L34">        return trie;</span>
+    }
+
+    private static void populateNodeDomain(TrieNode target, TrieNodeDTO source) {
+<span class="fc" id="L38">        target.setEndOfWord(source.isEndOfWord());</span>
+<span class="fc" id="L39">        target.getDocumentFrequencies().putAll(source.getDocumentFrequencies());</span>
+
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        for (Map.Entry&lt;String, TrieNodeDTO&gt; entry : source.getChildren().entrySet()) {</span>
+<span class="fc" id="L42">            char ch = entry.getKey().charAt(0);</span>
+<span class="fc" id="L43">            TrieNode childNode = new TrieNode();</span>
+<span class="fc" id="L44">            target.getChildren().put(ch, childNode);</span>
+<span class="fc" id="L45">            populateNodeDomain(childNode, entry.getValue());</span>
+<span class="fc" id="L46">        }</span>
+<span class="fc" id="L47">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

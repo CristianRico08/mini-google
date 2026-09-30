@@ -1,0 +1,12 @@
+co\edu\uptc\service\SearchEngineServiceTest.class
+co\edu\uptc\dto\TrieDTOTest.class
+co\edu\uptc\util\StopWordFilterTest.class
+co\edu\uptc\repository\JsonIndexRepositoryTest.class
+co\edu\uptc\model\TrieTest.class
+co\edu\uptc\repository\XmlMetadataRepositoryTest.class
+co\edu\uptc\i18n\I18nTest.class
+co\edu\uptc\dto\DocumentDTOTest.class
+co\edu\uptc\mapper\DocumentMapperTest.class
+co\edu\uptc\mapper\TrieMapperTest.class
+co\edu\uptc\util\TextNormalizerTest.class
+co\edu\uptc\model\AVLTreeTest.class

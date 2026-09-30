@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FileTextExtractor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">avl</a> &gt; <a href="index.source.html" class="el_package">co.edu.uptc.util</a> &gt; <span class="el_source">FileTextExtractor.java</span></div><h1>FileTextExtractor.java</h1><pre class="source lang-java linenums">package co.edu.uptc.util;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+
+<span class="nc" id="L14">public class FileTextExtractor {</span>
+
+    public static String extractText(File file) throws IOException {
+<span class="fc" id="L17">        String name = file.getName().toLowerCase();</span>
+
+<span class="pc bpc" id="L19" title="1 of 2 branches missed.">        if (name.endsWith(&quot;.pdf&quot;)) {</span>
+<span class="nc" id="L20">            return extractFromPdf(file);</span>
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">        } else if (name.endsWith(&quot;.docx&quot;)) {</span>
+<span class="nc" id="L22">            return extractFromDocx(file);</span>
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">        } else if (name.endsWith(&quot;.txt&quot;)) {</span>
+<span class="fc" id="L24">            return Files.readString(file.toPath());</span>
+        } else {
+<span class="nc" id="L26">            throw new IllegalArgumentException(&quot;Formato no soportado: &quot; + name);</span>
+        }
+    }
+
+    private static String extractFromPdf(File file) throws IOException {
+<span class="nc" id="L31">        try (PDDocument document = Loader.loadPDF(file)) {</span>
+<span class="nc" id="L32">            PDFTextStripper stripper = new PDFTextStripper();</span>
+<span class="nc" id="L33">            return stripper.getText(document);</span>
+        }
+    }
+
+    private static String extractFromDocx(File file) throws IOException {
+<span class="nc" id="L38">        try (FileInputStream fis = new FileInputStream(file);</span>
+<span class="nc" id="L39">             XWPFDocument document = new XWPFDocument(fis);</span>
+<span class="nc" id="L40">             XWPFWordExtractor extractor = new XWPFWordExtractor(document)) {</span>
+<span class="nc" id="L41">            return extractor.getText();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

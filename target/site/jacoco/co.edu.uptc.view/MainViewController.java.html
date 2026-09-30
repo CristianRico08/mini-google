@@ -1,0 +1,1240 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MainViewController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">avl</a> &gt; <a href="index.source.html" class="el_package">co.edu.uptc.view</a> &gt; <span class="el_source">MainViewController.java</span></div><h1>MainViewController.java</h1><pre class="source lang-java linenums">package co.edu.uptc.view;
+
+import co.edu.uptc.controller.IndexingReport;
+import co.edu.uptc.controller.MainController;
+import co.edu.uptc.i18n.I18n;
+import co.edu.uptc.model.Document;
+import co.edu.uptc.model.DocumentMetadata;
+import co.edu.uptc.model.SearchResult;
+import co.edu.uptc.model.WordStat;
+
+import javafx.application.Platform;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
+
+import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Controlador exclusivamente visual.
+ *
+ * No contiene lógica de negocio.
+ * Coordina la interfaz con MainController.
+ */
+<span class="nc" id="L48">public class MainViewController {</span>
+
+    @FXML
+    private Label lblBrand;
+
+    @FXML
+    private Label lblSubtitle;
+
+    @FXML
+    private Button btnLanguage;
+
+    @FXML
+    private Button btnSelectFile;
+
+    @FXML
+    private Label lblSelectedFile;
+
+    @FXML
+    private TextField txtAuthor;
+
+    @FXML
+    private TextField txtCategoryInput;
+
+    @FXML
+    private Button btnUploadIndex;
+
+    @FXML
+    private TextField txtSearch;
+
+    @FXML
+    private Button btnSearch;
+
+    @FXML
+    private Button btnClearSearch;
+
+    @FXML
+    private ComboBox&lt;String&gt; cbCategory;
+
+    @FXML
+    private DatePicker dpMinDate;
+
+    @FXML
+    private Button btnClearFilters;
+
+    @FXML
+    private Tab tabResults;
+
+    @FXML
+    private Tab tabDocuments;
+
+    @FXML
+    private Label lblResultsTitle;
+
+    @FXML
+    private Label lblDocumentsTitle;
+
+    @FXML
+    private Label lblResultCount;
+
+    @FXML
+    private Label lblDocumentCount;
+
+    @FXML
+    private TableView&lt;SearchResult&gt; tblResults;
+
+    @FXML
+    private TableColumn&lt;SearchResult, String&gt; colTitle;
+
+    @FXML
+    private TableColumn&lt;SearchResult, String&gt; colAuthor;
+
+    @FXML
+    private TableColumn&lt;SearchResult, String&gt; colCategory;
+
+    @FXML
+    private TableColumn&lt;SearchResult, String&gt; colDate;
+
+    @FXML
+    private TableColumn&lt;SearchResult, Double&gt; colScore;
+
+    @FXML
+    private TableView&lt;Document&gt; tblDocuments;
+
+    @FXML
+    private TableColumn&lt;Document, String&gt; colDocName;
+
+    @FXML
+    private TableColumn&lt;Document, String&gt; colDocAuthor;
+
+    @FXML
+    private TableColumn&lt;Document, String&gt; colDocCategory;
+
+    @FXML
+    private TableColumn&lt;Document, String&gt; colDocDate;
+
+    @FXML
+    private TableColumn&lt;Document, Void&gt; colDocAction;
+
+    @FXML
+    private Label lblStatsTitle;
+
+    @FXML
+    private Label lblDocumentsMetric;
+
+    @FXML
+    private Label lblWordsMetric;
+
+    @FXML
+    private Label lblCloudTitle;
+
+    @FXML
+    private Label lblCloudHelper;
+
+    @FXML
+    private FlowPane flowWordCloud;
+
+    @FXML
+    private Label lblStatus;
+
+<span class="nc" id="L167">    private final MainController mainController =</span>
+            new MainController(
+                    &quot;data/index.json&quot;,
+                    &quot;data/metadata.xml&quot;
+            );
+
+<span class="nc" id="L173">    private final Popup autocompletePopup =</span>
+            new Popup();
+
+<span class="nc" id="L176">    private final ListView&lt;String&gt; autocompleteList =</span>
+            new ListView&lt;&gt;();
+
+<span class="nc" id="L179">    private final Map&lt;String, String&gt; categoryDisplayToValue =</span>
+            new HashMap&lt;&gt;();
+
+<span class="nc" id="L182">    private List&lt;File&gt; selectedFiles = List.of();</span>
+
+    @FXML
+    public void initialize() {
+
+<span class="nc" id="L187">        configureResultTable();</span>
+<span class="nc" id="L188">        configureDocumentTable();</span>
+<span class="nc" id="L189">        configureAutocomplete();</span>
+<span class="nc" id="L190">        configureSearch();</span>
+
+<span class="nc" id="L192">        refreshAllViewData();</span>
+<span class="nc" id="L193">        updateTexts();</span>
+
+<span class="nc" id="L195">        Platform.runLater(this::updateStageTitle);</span>
+<span class="nc" id="L196">    }</span>
+
+    private void configureResultTable() {
+
+<span class="nc" id="L200">        colTitle.setCellValueFactory(</span>
+                data -&gt;
+<span class="nc" id="L202">                        new SimpleStringProperty(</span>
+<span class="nc" id="L203">                                data.getValue()</span>
+<span class="nc" id="L204">                                        .getDocument()</span>
+<span class="nc" id="L205">                                        .getTitle()</span>
+                        )
+        );
+
+<span class="nc" id="L209">        colAuthor.setCellValueFactory(</span>
+                data -&gt;
+<span class="nc" id="L211">                        new SimpleStringProperty(</span>
+<span class="nc" id="L212">                                authorOf(</span>
+<span class="nc" id="L213">                                        data.getValue()</span>
+<span class="nc" id="L214">                                                .getDocument()</span>
+                                )
+                        )
+        );
+
+<span class="nc" id="L219">        colCategory.setCellValueFactory(</span>
+                data -&gt;
+<span class="nc" id="L221">                        new SimpleStringProperty(</span>
+<span class="nc" id="L222">                                categoryOf(</span>
+<span class="nc" id="L223">                                        data.getValue()</span>
+<span class="nc" id="L224">                                                .getDocument()</span>
+                                )
+                        )
+        );
+
+<span class="nc" id="L229">        colDate.setCellValueFactory(</span>
+                data -&gt;
+<span class="nc" id="L231">                        new SimpleStringProperty(</span>
+<span class="nc" id="L232">                                dateOf(</span>
+<span class="nc" id="L233">                                        data.getValue()</span>
+<span class="nc" id="L234">                                                .getDocument()</span>
+                                )
+                        )
+        );
+
+<span class="nc" id="L239">        colScore.setCellValueFactory(</span>
+                data -&gt;
+<span class="nc" id="L241">                        new SimpleDoubleProperty(</span>
+<span class="nc" id="L242">                                data.getValue()</span>
+<span class="nc" id="L243">                                        .getScore()</span>
+<span class="nc" id="L244">                        ).asObject()</span>
+        );
+
+<span class="nc" id="L247">        colScore.setCellFactory(</span>
+                column -&gt;
+<span class="nc" id="L249">                        new TableCell&lt;&gt;() {</span>
+
+                            @Override
+                            protected void updateItem(
+                                    Double value,
+                                    boolean empty) {
+
+<span class="nc" id="L256">                                super.updateItem(</span>
+                                        value,
+                                        empty
+                                );
+
+<span class="nc bnc" id="L261" title="All 4 branches missed.">                                if (empty || value == null) {</span>
+<span class="nc" id="L262">                                    setText(null);</span>
+                                } else {
+<span class="nc" id="L264">                                    setText(</span>
+<span class="nc" id="L265">                                            String.format(</span>
+                                                    &quot;%.4f&quot;,
+                                                    value
+                                            )
+                                    );
+                                }
+<span class="nc" id="L271">                            }</span>
+                        }
+        );
+<span class="nc" id="L274">    }</span>
+
+    private void configureDocumentTable() {
+
+<span class="nc" id="L278">        colDocName.setCellValueFactory(</span>
+                data -&gt;
+<span class="nc" id="L280">                        new SimpleStringProperty(</span>
+<span class="nc" id="L281">                                data.getValue()</span>
+<span class="nc" id="L282">                                        .getTitle()</span>
+                        )
+        );
+
+<span class="nc" id="L286">        colDocAuthor.setCellValueFactory(</span>
+                data -&gt;
+<span class="nc" id="L288">                        new SimpleStringProperty(</span>
+<span class="nc" id="L289">                                authorOf(</span>
+<span class="nc" id="L290">                                        data.getValue()</span>
+                                )
+                        )
+        );
+
+<span class="nc" id="L295">        colDocCategory.setCellValueFactory(</span>
+                data -&gt;
+<span class="nc" id="L297">                        new SimpleStringProperty(</span>
+<span class="nc" id="L298">                                categoryOf(</span>
+<span class="nc" id="L299">                                        data.getValue()</span>
+                                )
+                        )
+        );
+
+<span class="nc" id="L304">        colDocDate.setCellValueFactory(</span>
+                data -&gt;
+<span class="nc" id="L306">                        new SimpleStringProperty(</span>
+<span class="nc" id="L307">                                dateOf(</span>
+<span class="nc" id="L308">                                        data.getValue()</span>
+                                )
+                        )
+        );
+
+<span class="nc" id="L313">        colDocAction.setCellFactory(</span>
+                column -&gt;
+<span class="nc" id="L315">                        new TableCell&lt;&gt;() {</span>
+
+<span class="nc" id="L317">                            private final Button deleteButton =</span>
+                                    new Button();
+
+                            {
+<span class="nc" id="L321">                                deleteButton</span>
+<span class="nc" id="L322">                                        .getStyleClass()</span>
+<span class="nc" id="L323">                                        .add(&quot;delete-button&quot;);</span>
+
+<span class="nc" id="L325">                                deleteButton.setOnAction(</span>
+                                        event -&gt; {
+
+<span class="nc" id="L328">                                            Document document =</span>
+<span class="nc" id="L329">                                                    getTableView()</span>
+<span class="nc" id="L330">                                                            .getItems()</span>
+<span class="nc" id="L331">                                                            .get(</span>
+<span class="nc" id="L332">                                                                    getIndex()</span>
+                                                            );
+
+<span class="nc" id="L335">                                            confirmDelete(document);</span>
+<span class="nc" id="L336">                                        }</span>
+                                );
+                            }
+
+                            @Override
+                            protected void updateItem(
+                                    Void item,
+                                    boolean empty) {
+
+<span class="nc" id="L345">                                super.updateItem(</span>
+                                        item,
+                                        empty
+                                );
+
+<span class="nc bnc" id="L350" title="All 2 branches missed.">                                if (empty) {</span>
+<span class="nc" id="L351">                                    setGraphic(null);</span>
+                                } else {
+
+<span class="nc" id="L354">                                    deleteButton.setText(</span>
+<span class="nc" id="L355">                                            I18n.get(</span>
+                                                    &quot;button.delete&quot;
+                                            )
+                                    );
+
+<span class="nc" id="L360">                                    setGraphic(</span>
+                                            deleteButton
+                                    );
+                                }
+<span class="nc" id="L364">                            }</span>
+                        }
+        );
+<span class="nc" id="L367">    }</span>
+
+    private void configureAutocomplete() {
+
+<span class="nc" id="L371">        autocompleteList.setPrefHeight(160);</span>
+
+<span class="nc" id="L373">        autocompleteList</span>
+<span class="nc" id="L374">                .getStyleClass()</span>
+<span class="nc" id="L375">                .add(&quot;autocomplete-popup-list&quot;);</span>
+
+<span class="nc" id="L377">        autocompletePopup.setAutoHide(true);</span>
+<span class="nc" id="L378">        autocompletePopup.setHideOnEscape(true);</span>
+
+<span class="nc" id="L380">        autocompletePopup</span>
+<span class="nc" id="L381">                .getContent()</span>
+<span class="nc" id="L382">                .add(autocompleteList);</span>
+
+<span class="nc" id="L384">        autocompleteList.setOnMouseClicked(</span>
+                event -&gt; {
+
+<span class="nc" id="L387">                    String selected =</span>
+                            autocompleteList
+<span class="nc" id="L389">                                    .getSelectionModel()</span>
+<span class="nc" id="L390">                                    .getSelectedItem();</span>
+
+<span class="nc bnc" id="L392" title="All 2 branches missed.">                    if (selected != null) {</span>
+
+<span class="nc" id="L394">                        txtSearch.setText(selected);</span>
+
+<span class="nc" id="L396">                        autocompletePopup.hide();</span>
+
+<span class="nc" id="L398">                        onSearch();</span>
+                    }
+<span class="nc" id="L400">                }</span>
+        );
+<span class="nc" id="L402">    }</span>
+
+    private void configureSearch() {
+
+<span class="nc" id="L406">        txtSearch.textProperty()</span>
+<span class="nc" id="L407">                .addListener(</span>
+                        (obs, oldValue, newValue) -&gt; {
+
+<span class="nc bnc" id="L410" title="All 2 branches missed.">                            if (newValue == null</span>
+<span class="nc bnc" id="L411" title="All 2 branches missed.">                                    || newValue.isBlank()) {</span>
+
+<span class="nc" id="L413">                                autocompletePopup.hide();</span>
+<span class="nc" id="L414">                                return;</span>
+                            }
+
+<span class="nc" id="L417">                            List&lt;String&gt; suggestions =</span>
+                                    mainController
+<span class="nc" id="L419">                                            .getAutocompleteSuggestions(</span>
+                                                    newValue
+                                            );
+
+<span class="nc bnc" id="L423" title="All 2 branches missed.">                            if (suggestions.isEmpty()) {</span>
+
+<span class="nc" id="L425">                                autocompletePopup.hide();</span>
+<span class="nc" id="L426">                                return;</span>
+                            }
+
+<span class="nc" id="L429">                            autocompleteList.setItems(</span>
+                                    FXCollections
+<span class="nc" id="L431">                                            .observableArrayList(</span>
+                                                    suggestions
+                                            )
+                            );
+
+<span class="nc" id="L436">                            autocompleteList.setPrefWidth(</span>
+<span class="nc" id="L437">                                    txtSearch.getWidth()</span>
+                            );
+
+<span class="nc" id="L440">                            Bounds bounds =</span>
+<span class="nc" id="L441">                                    txtSearch.localToScreen(</span>
+                                            txtSearch
+<span class="nc" id="L443">                                                    .getBoundsInLocal()</span>
+                                    );
+
+<span class="nc bnc" id="L446" title="All 2 branches missed.">                            if (bounds != null) {</span>
+
+<span class="nc" id="L448">                                autocompletePopup.show(</span>
+                                        txtSearch,
+<span class="nc" id="L450">                                        bounds.getMinX(),</span>
+<span class="nc" id="L451">                                        bounds.getMaxY() + 3</span>
+                                );
+                            }
+<span class="nc" id="L454">                        }</span>
+                );
+<span class="nc" id="L456">    }</span>
+
+    @FXML
+    public void onSelectFile() {
+
+<span class="nc" id="L461">        FileChooser chooser =</span>
+                new FileChooser();
+
+<span class="nc" id="L464">        chooser.setTitle(</span>
+<span class="nc" id="L465">                I18n.get(&quot;chooser.title&quot;)</span>
+        );
+
+<span class="nc" id="L468">        chooser.getExtensionFilters()</span>
+<span class="nc" id="L469">                .add(</span>
+                        new FileChooser.ExtensionFilter(
+<span class="nc" id="L471">                                I18n.get(&quot;chooser.filter&quot;),</span>
+                                &quot;*.txt&quot;,
+                                &quot;*.pdf&quot;,
+                                &quot;*.docx&quot;
+                        )
+                );
+
+<span class="nc" id="L478">        Stage stage =</span>
+<span class="nc" id="L479">                getStage(btnSelectFile);</span>
+
+<span class="nc" id="L481">        List&lt;File&gt; files =</span>
+<span class="nc" id="L482">                chooser.showOpenMultipleDialog(stage);</span>
+
+<span class="nc bnc" id="L484" title="All 4 branches missed.">        if (files == null || files.isEmpty()) {</span>
+
+<span class="nc" id="L486">            selectedFiles = List.of();</span>
+
+<span class="nc" id="L488">            lblSelectedFile.setText(</span>
+<span class="nc" id="L489">                    I18n.get(&quot;upload.noFile&quot;)</span>
+            );
+
+<span class="nc" id="L492">            return;</span>
+        }
+
+<span class="nc" id="L495">        selectedFiles = List.copyOf(files);</span>
+
+<span class="nc bnc" id="L497" title="All 2 branches missed.">        if (selectedFiles.size() == 1) {</span>
+
+<span class="nc" id="L499">            lblSelectedFile.setText(</span>
+                    selectedFiles
+<span class="nc" id="L501">                            .get(0)</span>
+<span class="nc" id="L502">                            .getName()</span>
+            );
+
+        } else {
+
+<span class="nc" id="L507">            lblSelectedFile.setText(</span>
+<span class="nc" id="L508">                    I18n.get(</span>
+                            &quot;upload.filesSelected&quot;,
+<span class="nc" id="L510">                            selectedFiles.size()</span>
+                    )
+            );
+        }
+
+<span class="nc" id="L515">        setStatus(</span>
+<span class="nc" id="L516">                I18n.get(</span>
+                        &quot;status.filesSelected&quot;,
+<span class="nc" id="L518">                        selectedFiles.size()</span>
+                )
+        );
+<span class="nc" id="L521">    }</span>
+
+    @FXML
+    public void onUploadIndex() {
+
+<span class="nc bnc" id="L526" title="All 2 branches missed.">        if (selectedFiles.isEmpty()) {</span>
+
+<span class="nc" id="L528">            showMessage(</span>
+                    Alert.AlertType.WARNING,
+<span class="nc" id="L530">                    I18n.get(&quot;alert.warningTitle&quot;),</span>
+<span class="nc" id="L531">                    I18n.get(&quot;alert.selectFile&quot;)</span>
+            );
+
+<span class="nc" id="L534">            return;</span>
+        }
+
+        String author =
+<span class="nc bnc" id="L538" title="All 2 branches missed.">                txtAuthor.getText().isBlank()</span>
+<span class="nc" id="L539">                        ? I18n.get(&quot;author.anonymous&quot;)</span>
+<span class="nc" id="L540">                        : txtAuthor.getText().trim();</span>
+
+        String category =
+                txtCategoryInput
+<span class="nc" id="L544">                        .getText()</span>
+<span class="nc bnc" id="L545" title="All 2 branches missed.">                        .isBlank()</span>
+<span class="nc" id="L546">                        ? I18n.get(&quot;category.general&quot;)</span>
+                        : txtCategoryInput
+<span class="nc" id="L548">                                .getText()</span>
+<span class="nc" id="L549">                                .trim();</span>
+
+<span class="nc" id="L551">        IndexingReport report =</span>
+<span class="nc" id="L552">                mainController.indexFiles(</span>
+                        selectedFiles,
+                        author,
+                        category
+                );
+
+<span class="nc" id="L558">        selectedFiles = List.of();</span>
+
+<span class="nc" id="L560">        lblSelectedFile.setText(</span>
+<span class="nc" id="L561">                I18n.get(&quot;upload.noFile&quot;)</span>
+        );
+
+<span class="nc" id="L564">        txtAuthor.clear();</span>
+<span class="nc" id="L565">        txtCategoryInput.clear();</span>
+
+<span class="nc" id="L567">        refreshAllViewData();</span>
+
+<span class="nc" id="L569">        setStatus(</span>
+<span class="nc" id="L570">                I18n.get(</span>
+                        &quot;status.indexedSummary&quot;,
+<span class="nc" id="L572">                        report.indexed(),</span>
+<span class="nc" id="L573">                        report.selected()</span>
+                )
+        );
+
+<span class="nc" id="L577">        showIndexingAlert(report);</span>
+<span class="nc" id="L578">    }</span>
+
+    @FXML
+    public void onSearch() {
+
+<span class="nc" id="L583">        String query =</span>
+<span class="nc" id="L584">                txtSearch.getText();</span>
+
+<span class="nc bnc" id="L586" title="All 4 branches missed.">        if (query == null || query.isBlank()) {</span>
+
+<span class="nc" id="L588">            tblResults</span>
+<span class="nc" id="L589">                    .getItems()</span>
+<span class="nc" id="L590">                    .clear();</span>
+
+<span class="nc" id="L592">            updateResultCount();</span>
+
+<span class="nc" id="L594">            setStatus(</span>
+<span class="nc" id="L595">                    I18n.get(&quot;status.emptySearch&quot;)</span>
+            );
+
+<span class="nc" id="L598">            autocompletePopup.hide();</span>
+
+<span class="nc" id="L600">            return;</span>
+        }
+
+<span class="nc" id="L603">        String category =</span>
+<span class="nc" id="L604">                categoryDisplayToValue.getOrDefault(</span>
+<span class="nc" id="L605">                        cbCategory.getValue(),</span>
+<span class="nc" id="L606">                        cbCategory.getValue()</span>
+                );
+
+<span class="nc" id="L609">        LocalDate minDate =</span>
+<span class="nc" id="L610">                dpMinDate.getValue();</span>
+
+<span class="nc" id="L612">        List&lt;SearchResult&gt; results =</span>
+<span class="nc" id="L613">                mainController.search(</span>
+                        query,
+                        category,
+                        minDate
+                );
+
+<span class="nc" id="L619">        tblResults.setItems(</span>
+<span class="nc" id="L620">                FXCollections.observableArrayList(</span>
+                        results
+                )
+        );
+
+<span class="nc" id="L625">        updateResultCount();</span>
+
+<span class="nc bnc" id="L627" title="All 2 branches missed.">        if (results.isEmpty()) {</span>
+
+<span class="nc" id="L629">            setStatus(</span>
+<span class="nc" id="L630">                    I18n.get(&quot;status.noResults&quot;)</span>
+            );
+
+        } else {
+
+<span class="nc" id="L635">            setStatus(</span>
+<span class="nc" id="L636">                    I18n.get(</span>
+                            &quot;status.resultsFound&quot;,
+<span class="nc" id="L638">                            results.size()</span>
+                    )
+            );
+        }
+
+<span class="nc" id="L643">        autocompletePopup.hide();</span>
+<span class="nc" id="L644">    }</span>
+
+    @FXML
+    public void onClearSearch() {
+
+<span class="nc" id="L649">        txtSearch.clear();</span>
+
+<span class="nc" id="L651">        tblResults</span>
+<span class="nc" id="L652">                .getItems()</span>
+<span class="nc" id="L653">                .clear();</span>
+
+<span class="nc" id="L655">        updateResultCount();</span>
+
+<span class="nc" id="L657">        autocompletePopup.hide();</span>
+
+<span class="nc" id="L659">        setStatus(</span>
+<span class="nc" id="L660">                I18n.get(&quot;status.ready&quot;)</span>
+        );
+<span class="nc" id="L662">    }</span>
+
+    @FXML
+    public void onClearFilters() {
+
+<span class="nc" id="L667">        cbCategory</span>
+<span class="nc" id="L668">                .getSelectionModel()</span>
+<span class="nc" id="L669">                .selectFirst();</span>
+
+<span class="nc" id="L671">        dpMinDate.setValue(null);</span>
+
+<span class="nc bnc" id="L673" title="All 2 branches missed.">        if (!txtSearch.getText().isBlank()) {</span>
+
+<span class="nc" id="L675">            onSearch();</span>
+
+        } else {
+
+<span class="nc" id="L679">            setStatus(</span>
+<span class="nc" id="L680">                    I18n.get(&quot;status.filtersCleared&quot;)</span>
+            );
+        }
+<span class="nc" id="L683">    }</span>
+
+    @FXML
+    public void onToggleLanguage() {
+
+<span class="nc" id="L688">        I18n.toggleLanguage();</span>
+
+<span class="nc" id="L690">        refreshAllViewData();</span>
+<span class="nc" id="L691">        updateTexts();</span>
+<span class="nc" id="L692">        updateStageTitle();</span>
+<span class="nc" id="L693">    }</span>
+
+    private void refreshAllViewData() {
+
+<span class="nc" id="L697">        configureCategories();</span>
+
+<span class="nc" id="L699">        tblDocuments.setItems(</span>
+<span class="nc" id="L700">                FXCollections.observableArrayList(</span>
+                        mainController
+<span class="nc" id="L702">                                .getIndexedDocuments()</span>
+                )
+        );
+
+<span class="nc" id="L706">        updateDocumentCount();</span>
+<span class="nc" id="L707">        updateStatistics();</span>
+<span class="nc" id="L708">        updateWordCloud();</span>
+<span class="nc" id="L709">    }</span>
+
+    private void configureCategories() {
+
+<span class="nc" id="L713">        String current =</span>
+<span class="nc" id="L714">                categoryDisplayToValue.get(</span>
+<span class="nc" id="L715">                        cbCategory.getValue()</span>
+                );
+
+<span class="nc" id="L718">        categoryDisplayToValue.clear();</span>
+
+<span class="nc" id="L720">        String all =</span>
+<span class="nc" id="L721">                I18n.get(&quot;filter.all&quot;);</span>
+
+<span class="nc" id="L723">        categoryDisplayToValue.put(</span>
+                all,
+                &quot;Todas&quot;
+        );
+
+<span class="nc" id="L728">        List&lt;String&gt; values =</span>
+                new ArrayList&lt;&gt;();
+
+<span class="nc" id="L731">        values.add(all);</span>
+
+        for (String category :
+<span class="nc bnc" id="L734" title="All 2 branches missed.">                mainController.getCategories()) {</span>
+
+<span class="nc" id="L736">            categoryDisplayToValue.put(</span>
+                    category,
+                    category
+            );
+
+<span class="nc" id="L741">            values.add(category);</span>
+<span class="nc" id="L742">        }</span>
+
+<span class="nc" id="L744">        cbCategory.setItems(</span>
+<span class="nc" id="L745">                FXCollections.observableArrayList(</span>
+                        values
+                )
+        );
+
+<span class="nc" id="L750">        String selected = all;</span>
+
+<span class="nc bnc" id="L752" title="All 2 branches missed.">        if (current != null) {</span>
+
+<span class="nc" id="L754">            selected =</span>
+                    categoryDisplayToValue
+<span class="nc" id="L756">                            .entrySet()</span>
+<span class="nc" id="L757">                            .stream()</span>
+<span class="nc" id="L758">                            .filter(</span>
+                                    entry -&gt;
+<span class="nc" id="L760">                                            entry.getValue()</span>
+<span class="nc" id="L761">                                                    .equalsIgnoreCase(</span>
+                                                            current
+                                                    )
+                            )
+<span class="nc" id="L765">                            .map(</span>
+                                    Map.Entry::getKey
+                            )
+<span class="nc" id="L768">                            .findFirst()</span>
+<span class="nc" id="L769">                            .orElse(all);</span>
+        }
+
+<span class="nc" id="L772">        cbCategory</span>
+<span class="nc" id="L773">                .getSelectionModel()</span>
+<span class="nc" id="L774">                .select(selected);</span>
+<span class="nc" id="L775">    }</span>
+
+    private void updateTexts() {
+
+<span class="nc" id="L779">        lblBrand.setText(</span>
+<span class="nc" id="L780">                I18n.get(&quot;app.title&quot;)</span>
+        );
+
+<span class="nc" id="L783">        lblSubtitle.setText(</span>
+<span class="nc" id="L784">                I18n.get(&quot;app.subtitle&quot;)</span>
+        );
+
+<span class="nc" id="L787">        btnLanguage.setText(</span>
+<span class="nc" id="L788">                I18n.get(&quot;button.language&quot;)</span>
+        );
+
+<span class="nc" id="L791">        btnSelectFile.setText(</span>
+<span class="nc" id="L792">                I18n.get(&quot;button.selectFile&quot;)</span>
+        );
+
+<span class="nc" id="L795">        txtAuthor.setPromptText(</span>
+<span class="nc" id="L796">                I18n.get(&quot;input.author&quot;)</span>
+        );
+
+<span class="nc" id="L799">        txtCategoryInput.setPromptText(</span>
+<span class="nc" id="L800">                I18n.get(&quot;input.category&quot;)</span>
+        );
+
+<span class="nc" id="L803">        btnUploadIndex.setText(</span>
+<span class="nc" id="L804">                I18n.get(&quot;button.uploadIndex&quot;)</span>
+        );
+
+<span class="nc" id="L807">        txtSearch.setPromptText(</span>
+<span class="nc" id="L808">                I18n.get(&quot;search.placeholder&quot;)</span>
+        );
+
+<span class="nc" id="L811">        btnSearch.setText(</span>
+<span class="nc" id="L812">                I18n.get(&quot;button.search&quot;)</span>
+        );
+
+<span class="nc" id="L815">        btnClearSearch.setText(</span>
+<span class="nc" id="L816">                I18n.get(&quot;button.clearSearch&quot;)</span>
+        );
+
+<span class="nc" id="L819">        cbCategory.setPromptText(</span>
+<span class="nc" id="L820">                I18n.get(&quot;filter.category&quot;)</span>
+        );
+
+<span class="nc" id="L823">        dpMinDate.setPromptText(</span>
+<span class="nc" id="L824">                I18n.get(&quot;filter.date&quot;)</span>
+        );
+
+<span class="nc" id="L827">        btnClearFilters.setText(</span>
+<span class="nc" id="L828">                I18n.get(&quot;button.clearFilters&quot;)</span>
+        );
+
+<span class="nc" id="L831">        tabResults.setText(</span>
+<span class="nc" id="L832">                I18n.get(&quot;tab.results&quot;)</span>
+        );
+
+<span class="nc" id="L835">        tabDocuments.setText(</span>
+<span class="nc" id="L836">                I18n.get(&quot;tab.documents&quot;)</span>
+        );
+
+<span class="nc" id="L839">        lblResultsTitle.setText(</span>
+<span class="nc" id="L840">                I18n.get(&quot;results.title&quot;)</span>
+        );
+
+<span class="nc" id="L843">        lblDocumentsTitle.setText(</span>
+<span class="nc" id="L844">                I18n.get(&quot;documents.title&quot;)</span>
+        );
+
+<span class="nc" id="L847">        colTitle.setText(</span>
+<span class="nc" id="L848">                I18n.get(&quot;results.titleColumn&quot;)</span>
+        );
+
+<span class="nc" id="L851">        colAuthor.setText(</span>
+<span class="nc" id="L852">                I18n.get(&quot;results.authorColumn&quot;)</span>
+        );
+
+<span class="nc" id="L855">        colCategory.setText(</span>
+<span class="nc" id="L856">                I18n.get(&quot;results.categoryColumn&quot;)</span>
+        );
+
+<span class="nc" id="L859">        colDate.setText(</span>
+<span class="nc" id="L860">                I18n.get(&quot;results.dateColumn&quot;)</span>
+        );
+
+<span class="nc" id="L863">        colScore.setText(</span>
+<span class="nc" id="L864">                I18n.get(&quot;results.scoreColumn&quot;)</span>
+        );
+
+<span class="nc" id="L867">        colDocName.setText(</span>
+<span class="nc" id="L868">                I18n.get(&quot;documents.nameColumn&quot;)</span>
+        );
+
+<span class="nc" id="L871">        colDocAuthor.setText(</span>
+<span class="nc" id="L872">                I18n.get(&quot;documents.authorColumn&quot;)</span>
+        );
+
+<span class="nc" id="L875">        colDocCategory.setText(</span>
+<span class="nc" id="L876">                I18n.get(&quot;documents.categoryColumn&quot;)</span>
+        );
+
+<span class="nc" id="L879">        colDocDate.setText(</span>
+<span class="nc" id="L880">                I18n.get(&quot;documents.dateColumn&quot;)</span>
+        );
+
+<span class="nc" id="L883">        colDocAction.setText(</span>
+<span class="nc" id="L884">                I18n.get(&quot;documents.actionColumn&quot;)</span>
+        );
+
+<span class="nc" id="L887">        lblStatsTitle.setText(</span>
+<span class="nc" id="L888">                I18n.get(&quot;stats.title&quot;)</span>
+        );
+
+<span class="nc" id="L891">        lblCloudTitle.setText(</span>
+<span class="nc" id="L892">                I18n.get(&quot;stats.cloudTitle&quot;)</span>
+        );
+
+<span class="nc" id="L895">        lblCloudHelper.setText(</span>
+<span class="nc" id="L896">                I18n.get(&quot;stats.helper&quot;)</span>
+        );
+
+<span class="nc" id="L899">        tblResults.setPlaceholder(</span>
+                new Label(
+<span class="nc" id="L901">                        I18n.get(&quot;results.placeholder&quot;)</span>
+                )
+        );
+
+<span class="nc" id="L905">        tblDocuments.setPlaceholder(</span>
+                new Label(
+<span class="nc" id="L907">                        I18n.get(&quot;documents.placeholder&quot;)</span>
+                )
+        );
+
+<span class="nc" id="L911">        updateResultCount();</span>
+<span class="nc" id="L912">        updateDocumentCount();</span>
+<span class="nc" id="L913">        updateStatistics();</span>
+<span class="nc" id="L914">        updateWordCloud();</span>
+<span class="nc" id="L915">    }</span>
+
+    private void updateWordCloud() {
+
+<span class="nc" id="L919">        flowWordCloud</span>
+<span class="nc" id="L920">                .getChildren()</span>
+<span class="nc" id="L921">                .clear();</span>
+
+<span class="nc" id="L923">        List&lt;WordStat&gt; words =</span>
+<span class="nc" id="L924">                mainController.getTopWordFrequencies(18);</span>
+
+<span class="nc bnc" id="L926" title="All 2 branches missed.">        if (words.isEmpty()) {</span>
+
+<span class="nc" id="L928">            flowWordCloud</span>
+<span class="nc" id="L929">                    .getChildren()</span>
+<span class="nc" id="L930">                    .add(</span>
+                            new Label(
+<span class="nc" id="L932">                                    I18n.get(&quot;stats.empty&quot;)</span>
+                            )
+                    );
+
+<span class="nc" id="L936">            return;</span>
+        }
+
+<span class="nc" id="L939">        int max =</span>
+<span class="nc" id="L940">                words.stream()</span>
+<span class="nc" id="L941">                        .mapToInt(WordStat::frequency)</span>
+<span class="nc" id="L942">                        .max()</span>
+<span class="nc" id="L943">                        .orElse(1);</span>
+
+<span class="nc" id="L945">        int min =</span>
+<span class="nc" id="L946">                words.stream()</span>
+<span class="nc" id="L947">                        .mapToInt(WordStat::frequency)</span>
+<span class="nc" id="L948">                        .min()</span>
+<span class="nc" id="L949">                        .orElse(1);</span>
+
+<span class="nc bnc" id="L951" title="All 2 branches missed.">        for (WordStat stat : words) {</span>
+
+<span class="nc" id="L953">            Label chip =</span>
+<span class="nc" id="L954">                    new Label(stat.word());</span>
+
+<span class="nc" id="L956">            chip.getStyleClass()</span>
+<span class="nc" id="L957">                    .add(&quot;word-chip&quot;);</span>
+
+            double fontSize;
+
+<span class="nc bnc" id="L961" title="All 2 branches missed.">            if (min == max) {</span>
+
+<span class="nc" id="L963">                fontSize = 22;</span>
+
+            } else {
+
+<span class="nc" id="L967">                fontSize =</span>
+                        13
+                                + (
+<span class="nc" id="L970">                                (stat.frequency() - min)</span>
+                                        * 18.0
+                                        / (max - min)
+                        );
+            }
+
+<span class="nc" id="L976">            chip.setStyle(</span>
+                    &quot;-fx-font-size: &quot;
+<span class="nc" id="L978">                            + String.format(</span>
+                                    &quot;%.1fpx&quot;,
+<span class="nc" id="L980">                                    fontSize</span>
+                            )
+                            + &quot;;&quot;
+            );
+
+<span class="nc" id="L985">            chip.setTooltip(</span>
+                    new javafx.scene.control.Tooltip(
+<span class="nc" id="L987">                            I18n.get(</span>
+                                    &quot;stats.tooltip&quot;,
+<span class="nc" id="L989">                                    stat.frequency()</span>
+                            )
+                    )
+            );
+
+<span class="nc" id="L994">            flowWordCloud</span>
+<span class="nc" id="L995">                    .getChildren()</span>
+<span class="nc" id="L996">                    .add(chip);</span>
+<span class="nc" id="L997">        }</span>
+<span class="nc" id="L998">    }</span>
+
+    private void updateStatistics() {
+
+<span class="nc" id="L1002">        lblDocumentsMetric.setText(</span>
+<span class="nc" id="L1003">                String.valueOf(</span>
+<span class="nc" id="L1004">                        mainController.getDocumentCount()</span>
+                )
+        );
+
+<span class="nc" id="L1008">        lblWordsMetric.setText(</span>
+<span class="nc" id="L1009">                String.valueOf(</span>
+<span class="nc" id="L1010">                        mainController.getTotalIndexedWords()</span>
+                )
+        );
+<span class="nc" id="L1013">    }</span>
+
+    private void updateResultCount() {
+
+<span class="nc" id="L1017">        int count =</span>
+<span class="nc" id="L1018">                tblResults.getItems().size();</span>
+
+<span class="nc" id="L1020">        lblResultCount.setText(</span>
+<span class="nc" id="L1021">                I18n.get(</span>
+                        &quot;status.resultsFound&quot;,
+<span class="nc" id="L1023">                        count</span>
+                )
+        );
+<span class="nc" id="L1026">    }</span>
+
+    private void updateDocumentCount() {
+
+<span class="nc" id="L1030">        int count =</span>
+<span class="nc" id="L1031">                tblDocuments.getItems().size();</span>
+
+<span class="nc" id="L1033">        lblDocumentCount.setText(</span>
+<span class="nc" id="L1034">                I18n.get(</span>
+                        &quot;stats.documents&quot;,
+<span class="nc" id="L1036">                        count</span>
+                )
+        );
+<span class="nc" id="L1039">    }</span>
+
+    private void confirmDelete(
+            Document document) {
+
+<span class="nc" id="L1044">        Alert alert =</span>
+                new Alert(
+                        Alert.AlertType.CONFIRMATION
+                );
+
+<span class="nc" id="L1049">        alert.setTitle(</span>
+<span class="nc" id="L1050">                I18n.get(&quot;alert.deleteTitle&quot;)</span>
+        );
+
+<span class="nc" id="L1053">        alert.setHeaderText(</span>
+<span class="nc" id="L1054">                I18n.get(&quot;alert.deleteHeader&quot;)</span>
+        );
+
+<span class="nc" id="L1057">        alert.setContentText(</span>
+<span class="nc" id="L1058">                I18n.get(</span>
+                        &quot;alert.deleteMessage&quot;,
+<span class="nc" id="L1060">                        document.getTitle()</span>
+                )
+        );
+
+<span class="nc" id="L1064">        alert.showAndWait()</span>
+<span class="nc" id="L1065">                .ifPresent(</span>
+                        response -&gt; {
+
+<span class="nc bnc" id="L1068" title="All 2 branches missed.">                            if (response == ButtonType.OK) {</span>
+
+<span class="nc" id="L1070">                                boolean removed =</span>
+                                        mainController
+<span class="nc" id="L1072">                                                .removeDocument(</span>
+<span class="nc" id="L1073">                                                        document.getId()</span>
+                                                );
+
+<span class="nc bnc" id="L1076" title="All 2 branches missed.">                                if (removed) {</span>
+
+<span class="nc" id="L1078">                                    refreshAllViewData();</span>
+
+<span class="nc" id="L1080">                                    if (!txtSearch</span>
+<span class="nc" id="L1081">                                            .getText()</span>
+<span class="nc bnc" id="L1082" title="All 2 branches missed.">                                            .isBlank()) {</span>
+
+<span class="nc" id="L1084">                                        onSearch();</span>
+                                    }
+
+<span class="nc" id="L1087">                                    setStatus(</span>
+<span class="nc" id="L1088">                                            I18n.get(</span>
+                                                    &quot;status.deleted&quot;
+                                            )
+                                    );
+                                }
+                            }
+<span class="nc" id="L1094">                        }</span>
+                );
+<span class="nc" id="L1096">    }</span>
+
+    private void showIndexingAlert(
+            IndexingReport report) {
+
+        Alert.AlertType type =
+<span class="nc bnc" id="L1102" title="All 2 branches missed.">                report.hasErrors()</span>
+<span class="nc" id="L1103">                        ? Alert.AlertType.WARNING</span>
+<span class="nc" id="L1104">                        : Alert.AlertType.INFORMATION;</span>
+
+        String title =
+<span class="nc bnc" id="L1107" title="All 2 branches missed.">                report.hasErrors()</span>
+<span class="nc" id="L1108">                        ? I18n.get(&quot;alert.warningTitle&quot;)</span>
+<span class="nc" id="L1109">                        : I18n.get(&quot;alert.successTitle&quot;);</span>
+
+<span class="nc" id="L1111">        StringBuilder message =</span>
+                new StringBuilder(
+<span class="nc" id="L1113">                        I18n.get(</span>
+                                &quot;alert.indexed&quot;,
+<span class="nc" id="L1115">                                report.indexed()</span>
+                        )
+                );
+
+<span class="nc bnc" id="L1119" title="All 2 branches missed.">        if (report.hasErrors()) {</span>
+
+<span class="nc" id="L1121">            message.append(&quot;\n\n&quot;)</span>
+<span class="nc" id="L1122">                    .append(</span>
+<span class="nc" id="L1123">                            I18n.get(&quot;alert.errors&quot;)</span>
+                    );
+
+<span class="nc" id="L1126">            report.errors()</span>
+<span class="nc" id="L1127">                    .forEach(</span>
+                            error -&gt;
+<span class="nc" id="L1129">                                    message.append(</span>
+                                            &quot;\n• &quot;
+<span class="nc" id="L1131">                                    ).append(error)</span>
+                    );
+        }
+
+<span class="nc" id="L1135">        showMessage(</span>
+                type,
+                title,
+<span class="nc" id="L1138">                message.toString()</span>
+        );
+<span class="nc" id="L1140">    }</span>
+
+    private void showMessage(
+            Alert.AlertType type,
+            String title,
+            String message) {
+
+<span class="nc" id="L1147">        Alert alert =</span>
+                new Alert(type);
+
+<span class="nc" id="L1150">        alert.setTitle(title);</span>
+<span class="nc" id="L1151">        alert.setHeaderText(null);</span>
+<span class="nc" id="L1152">        alert.setContentText(message);</span>
+
+<span class="nc" id="L1154">        alert.showAndWait();</span>
+<span class="nc" id="L1155">    }</span>
+
+    private String authorOf(
+            Document document) {
+
+<span class="nc" id="L1160">        DocumentMetadata metadata =</span>
+<span class="nc" id="L1161">                document.getMetadata();</span>
+
+<span class="nc bnc" id="L1163" title="All 2 branches missed.">        if (metadata == null</span>
+<span class="nc bnc" id="L1164" title="All 2 branches missed.">                || metadata.author() == null</span>
+<span class="nc bnc" id="L1165" title="All 2 branches missed.">                || metadata.author().isBlank()) {</span>
+
+<span class="nc" id="L1167">            return I18n.get(&quot;author.anonymous&quot;);</span>
+        }
+
+<span class="nc" id="L1170">        return metadata.author();</span>
+    }
+
+    private String categoryOf(
+            Document document) {
+
+<span class="nc" id="L1176">        DocumentMetadata metadata =</span>
+<span class="nc" id="L1177">                document.getMetadata();</span>
+
+<span class="nc bnc" id="L1179" title="All 2 branches missed.">        if (metadata == null</span>
+<span class="nc bnc" id="L1180" title="All 2 branches missed.">                || metadata.category() == null</span>
+<span class="nc bnc" id="L1181" title="All 2 branches missed.">                || metadata.category().isBlank()) {</span>
+
+<span class="nc" id="L1183">            return I18n.get(&quot;category.general&quot;);</span>
+        }
+
+<span class="nc" id="L1186">        return metadata.category();</span>
+    }
+
+    private String dateOf(
+            Document document) {
+
+<span class="nc" id="L1192">        DocumentMetadata metadata =</span>
+<span class="nc" id="L1193">                document.getMetadata();</span>
+
+<span class="nc bnc" id="L1195" title="All 2 branches missed.">        if (metadata == null</span>
+<span class="nc bnc" id="L1196" title="All 2 branches missed.">                || metadata.creationDate() == null) {</span>
+
+<span class="nc" id="L1198">            return &quot;-&quot;;</span>
+        }
+
+<span class="nc" id="L1201">        return metadata.creationDate().toString();</span>
+    }
+
+    private void setStatus(
+            String message) {
+
+<span class="nc" id="L1207">        lblStatus.setText(message);</span>
+<span class="nc" id="L1208">    }</span>
+
+    private Stage getStage(
+            Node node) {
+
+<span class="nc bnc" id="L1213" title="All 2 branches missed.">        if (node == null</span>
+<span class="nc bnc" id="L1214" title="All 2 branches missed.">                || node.getScene() == null) {</span>
+
+<span class="nc" id="L1216">            return null;</span>
+        }
+
+<span class="nc" id="L1219">        return node</span>
+<span class="nc" id="L1220">                .getScene()</span>
+<span class="nc bnc" id="L1221" title="All 2 branches missed.">                .getWindow()</span>
+<span class="nc" id="L1222">                instanceof Stage stage</span>
+<span class="nc" id="L1223">                ? stage</span>
+<span class="nc" id="L1224">                : null;</span>
+    }
+
+    private void updateStageTitle() {
+
+<span class="nc" id="L1229">        Stage stage =</span>
+<span class="nc" id="L1230">                getStage(btnLanguage);</span>
+
+<span class="nc bnc" id="L1232" title="All 2 branches missed.">        if (stage != null) {</span>
+
+<span class="nc" id="L1234">            stage.setTitle(</span>
+<span class="nc" id="L1235">                    I18n.get(&quot;window.title&quot;)</span>
+            );
+        }
+<span class="nc" id="L1238">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

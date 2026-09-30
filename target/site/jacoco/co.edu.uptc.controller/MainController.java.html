@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MainController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">avl</a> &gt; <a href="index.source.html" class="el_package">co.edu.uptc.controller</a> &gt; <span class="el_source">MainController.java</span></div><h1>MainController.java</h1><pre class="source lang-java linenums">package co.edu.uptc.controller;
+
+import co.edu.uptc.exception.SearchEngineException;
+import co.edu.uptc.model.Document;
+import co.edu.uptc.model.SearchResult;
+import co.edu.uptc.model.WordStat;
+import co.edu.uptc.service.SearchEngineService;
+
+import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Controlador de aplicación.
+ *
+ * No contiene componentes JavaFX.
+ * Coordina las operaciones entre la vista y el servicio.
+ */
+public class MainController {
+
+    private final SearchEngineService searchService;
+
+    public MainController(String jsonIndexPath, String xmlMetadataPath) {
+<span class="nc" id="L26">        this(new SearchEngineService(jsonIndexPath, xmlMetadataPath));</span>
+<span class="nc" id="L27">    }</span>
+
+<span class="nc" id="L29">    public MainController(SearchEngineService searchService) {</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        if (searchService == null) {</span>
+<span class="nc" id="L31">            throw new IllegalArgumentException(</span>
+                    &quot;El servicio de búsqueda no puede ser nulo.&quot;
+            );
+        }
+
+<span class="nc" id="L36">        this.searchService = searchService;</span>
+<span class="nc" id="L37">    }</span>
+
+    /**
+     * Ejecuta una búsqueda.
+     */
+    public List&lt;SearchResult&gt; search(
+            String query,
+            String category,
+            LocalDate minDate) {
+
+<span class="nc bnc" id="L47" title="All 4 branches missed.">        if (query == null || query.isBlank()) {</span>
+<span class="nc" id="L48">            return Collections.emptyList();</span>
+        }
+
+<span class="nc" id="L51">        return searchService.search(query, category, minDate);</span>
+    }
+
+    /**
+     * Obtiene sugerencias para autocompletar.
+     */
+    public List&lt;String&gt; getAutocompleteSuggestions(String prefix) {
+
+<span class="nc bnc" id="L59" title="All 4 branches missed.">        if (prefix == null || prefix.isBlank()) {</span>
+<span class="nc" id="L60">            return Collections.emptyList();</span>
+        }
+
+<span class="nc" id="L63">        return searchService.getAutocompleteSuggestions(prefix);</span>
+    }
+
+    /**
+     * Indexa varios archivos.
+     */
+    public IndexingReport indexFiles(
+            List&lt;File&gt; files,
+            String author,
+            String category) {
+
+<span class="nc bnc" id="L74" title="All 4 branches missed.">        if (files == null || files.isEmpty()) {</span>
+<span class="nc" id="L75">            return new IndexingReport(0, 0, List.of());</span>
+        }
+
+<span class="nc" id="L78">        int indexed = 0;</span>
+<span class="nc" id="L79">        List&lt;String&gt; errors = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        for (File file : files) {</span>
+            try {
+
+<span class="nc" id="L84">                searchService.indexFile(</span>
+                        file,
+                        author,
+                        category
+                );
+
+<span class="nc" id="L90">                indexed++;</span>
+
+<span class="nc" id="L92">            } catch (SearchEngineException | IllegalArgumentException e) {</span>
+
+                String name =
+<span class="nc bnc" id="L95" title="All 2 branches missed.">                        file == null</span>
+<span class="nc" id="L96">                                ? &quot;Archivo&quot;</span>
+<span class="nc" id="L97">                                : file.getName();</span>
+
+<span class="nc" id="L99">                errors.add(</span>
+<span class="nc" id="L100">                        name + &quot;: &quot; + e.getMessage()</span>
+                );
+<span class="nc" id="L102">            }</span>
+<span class="nc" id="L103">        }</span>
+
+<span class="nc" id="L105">        return new IndexingReport(</span>
+                indexed,
+<span class="nc" id="L107">                files.size(),</span>
+                errors
+        );
+    }
+
+    /**
+     * Obtiene los documentos actualmente indexados.
+     */
+    public List&lt;Document&gt; getIndexedDocuments() {
+<span class="nc" id="L116">        return searchService.getIndexedDocuments();</span>
+    }
+
+    /**
+     * Elimina un documento del índice.
+     */
+    public boolean removeDocument(String documentId) {
+<span class="nc" id="L123">        return searchService.removeDocument(documentId);</span>
+    }
+
+    /**
+     * Obtiene las categorías existentes.
+     */
+    public List&lt;String&gt; getCategories() {
+<span class="nc" id="L130">        return searchService.getCategories();</span>
+    }
+
+    /**
+     * Obtiene las palabras más frecuentes.
+     */
+    public List&lt;WordStat&gt; getTopWordFrequencies(int topN) {
+<span class="nc" id="L137">        return searchService.getTopWordFrequencies(topN);</span>
+    }
+
+    /**
+     * Cantidad de documentos indexados.
+     */
+    public int getDocumentCount() {
+<span class="nc" id="L144">        return searchService.getDocumentCount();</span>
+    }
+
+    /**
+     * Cantidad total de palabras indexadas.
+     */
+    public int getTotalIndexedWords() {
+<span class="nc" id="L151">        return searchService.getTotalIndexedWords();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

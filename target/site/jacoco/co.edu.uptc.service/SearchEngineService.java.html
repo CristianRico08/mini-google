@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SearchEngineService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">avl</a> &gt; <a href="index.source.html" class="el_package">co.edu.uptc.service</a> &gt; <span class="el_source">SearchEngineService.java</span></div><h1>SearchEngineService.java</h1><pre class="source lang-java linenums">package co.edu.uptc.service;
+
+import co.edu.uptc.dto.DocumentDTO;
+import co.edu.uptc.exception.SearchEngineException;
+import co.edu.uptc.mapper.DocumentMapper;
+import co.edu.uptc.mapper.TrieMapper;
+import co.edu.uptc.model.AVLTree;
+import co.edu.uptc.model.Document;
+import co.edu.uptc.model.DocumentMetadata;
+import co.edu.uptc.model.SearchResult;
+import co.edu.uptc.model.Trie;
+import co.edu.uptc.model.TrieNode;
+import co.edu.uptc.model.WordStat;
+import co.edu.uptc.repository.JsonIndexRepository;
+import co.edu.uptc.repository.XmlMetadataRepository;
+import co.edu.uptc.util.FileTextExtractor;
+import co.edu.uptc.util.StopWordFilter;
+import co.edu.uptc.util.TextNormalizer;
+
+import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+
+/**
+ * Servicio principal del motor de búsqueda.
+ */
+public class SearchEngineService {
+
+    private final Trie trie;
+
+    private final Map&lt;String, Document&gt; documents;
+
+    private final JsonIndexRepository indexRepository;
+
+    private final XmlMetadataRepository metadataRepository;
+
+    public SearchEngineService(
+            String jsonIndexPath,
+<span class="fc" id="L46">            String xmlMetadataPath) {</span>
+
+<span class="fc" id="L48">        this.indexRepository =</span>
+                new JsonIndexRepository(
+                        jsonIndexPath
+                );
+
+<span class="fc" id="L53">        this.metadataRepository =</span>
+                new XmlMetadataRepository(
+                        xmlMetadataPath
+                );
+
+<span class="fc" id="L58">        this.trie =</span>
+<span class="fc" id="L59">                TrieMapper.toDomain(</span>
+<span class="fc" id="L60">                        indexRepository.load()</span>
+                );
+
+<span class="fc" id="L63">        this.documents =</span>
+                new HashMap&lt;&gt;();
+
+<span class="fc" id="L66">        List&lt;DocumentDTO&gt; dtoList =</span>
+<span class="fc" id="L67">                metadataRepository.loadAll();</span>
+
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">        for (DocumentDTO dto : dtoList) {</span>
+
+<span class="nc" id="L71">            Document document =</span>
+<span class="nc" id="L72">                    DocumentMapper.toDomain(dto);</span>
+
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            if (document != null</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">                    &amp;&amp; document.getId() != null) {</span>
+
+<span class="nc" id="L77">                documents.put(</span>
+<span class="nc" id="L78">                        document.getId(),</span>
+                        document
+                );
+            }
+<span class="nc" id="L82">        }</span>
+<span class="fc" id="L83">    }</span>
+
+    /**
+     * Indexa un archivo.
+     */
+    public void indexFile(
+            File file,
+            String author,
+            String category) {
+
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (file == null) {</span>
+
+<span class="fc" id="L95">            throw new SearchEngineException(</span>
+                    &quot;El archivo no puede ser nulo.&quot;
+            );
+        }
+
+<span class="fc bfc" id="L100" title="All 2 branches covered.">        if (!file.isFile()) {</span>
+
+<span class="fc" id="L102">            throw new SearchEngineException(</span>
+                    &quot;El archivo seleccionado no es válido.&quot;
+            );
+        }
+
+        try {
+
+<span class="fc" id="L109">            String content =</span>
+<span class="fc" id="L110">                    FileTextExtractor.extractText(file);</span>
+
+<span class="fc" id="L112">            String[] tokens =</span>
+                    TextNormalizer
+<span class="fc" id="L114">                            .normalizeAndTokenize(</span>
+                                    content
+                            );
+
+            String documentId =
+<span class="fc" id="L119">                    UUID.randomUUID().toString();</span>
+
+<span class="fc" id="L121">            DocumentMetadata metadata =</span>
+                    new DocumentMetadata(
+
+                            author == null
+<span class="pc bpc" id="L125" title="1 of 4 branches missed.">                                    || author.isBlank()</span>
+<span class="fc" id="L126">                                    ? &quot;Anónimo&quot;</span>
+<span class="fc" id="L127">                                    : author,</span>
+
+                            category == null
+<span class="pc bpc" id="L130" title="1 of 4 branches missed.">                                    || category.isBlank()</span>
+<span class="fc" id="L131">                                    ? &quot;General&quot;</span>
+<span class="fc" id="L132">                                    : category,</span>
+
+<span class="fc" id="L134">                            LocalDate.now()</span>
+                    );
+
+<span class="fc" id="L137">            Document document =</span>
+                    new Document(
+
+                            documentId,
+
+<span class="fc" id="L142">                            file.getName(),</span>
+
+<span class="fc" id="L144">                            file.getAbsolutePath(),</span>
+
+                            tokens.length,
+
+                            metadata
+                    );
+
+<span class="fc" id="L151">            documents.put(</span>
+                    documentId,
+                    document
+            );
+
+<span class="fc bfc" id="L156" title="All 2 branches covered.">            for (String token : tokens) {</span>
+
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">                if (!token.isBlank()) {</span>
+
+<span class="fc" id="L160">                    trie.insert(</span>
+                            token,
+                            documentId
+                    );
+                }
+            }
+
+<span class="fc" id="L167">            persistState();</span>
+
+<span class="nc" id="L169">        } catch (SearchEngineException e) {</span>
+
+<span class="nc" id="L171">            throw e;</span>
+
+<span class="nc" id="L173">        } catch (Exception e) {</span>
+
+<span class="nc" id="L175">            throw new SearchEngineException(</span>
+                    &quot;No fue posible indexar el archivo: &quot;
+<span class="nc" id="L177">                            + file.getName(),</span>
+                    e
+            );
+<span class="fc" id="L180">        }</span>
+<span class="fc" id="L181">    }</span>
+
+    /**
+     * Busca utilizando TF-IDF.
+     */
+    public List&lt;SearchResult&gt; search(
+            String query,
+            String categoryFilter,
+            LocalDate dateFilter) {
+
+<span class="fc" id="L191">        String[] queryTokens =</span>
+                TextNormalizer
+<span class="fc" id="L193">                        .normalizeAndTokenize(query);</span>
+
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">        if (queryTokens.length == 0</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">                || documents.isEmpty()) {</span>
+
+<span class="fc" id="L198">            return Collections.emptyList();</span>
+        }
+
+<span class="fc" id="L201">        Map&lt;String, Double&gt; scoreMap =</span>
+                new HashMap&lt;&gt;();
+
+<span class="fc" id="L204">        int totalDocuments =</span>
+<span class="fc" id="L205">                documents.size();</span>
+
+<span class="fc bfc" id="L207" title="All 2 branches covered.">        for (String token : queryTokens) {</span>
+
+            /*
+             * No procesar stopwords como
+             * términos de búsqueda.
+             */
+<span class="fc bfc" id="L213" title="All 2 branches covered.">            if (StopWordFilter.isStopword(token)) {</span>
+<span class="fc" id="L214">                continue;</span>
+            }
+
+<span class="fc" id="L217">            Map&lt;String, Integer&gt; documentFrequencies =</span>
+<span class="fc" id="L218">                    trie.getDocumentFrequencies(token);</span>
+
+<span class="fc bfc" id="L220" title="All 2 branches covered.">            if (documentFrequencies.isEmpty()) {</span>
+<span class="fc" id="L221">                continue;</span>
+            }
+
+<span class="fc" id="L224">            int documentsWithToken =</span>
+<span class="fc" id="L225">                    documentFrequencies.size();</span>
+
+<span class="fc" id="L227">            double idf =</span>
+<span class="fc" id="L228">                    Math.log(</span>
+                            (double) totalDocuments
+                                    / documentsWithToken
+                    ) + 1.0;
+
+            for (
+                    Map.Entry&lt;String, Integer&gt; entry
+<span class="fc bfc" id="L235" title="All 2 branches covered.">                    : documentFrequencies.entrySet()) {</span>
+
+<span class="fc" id="L237">                String documentId =</span>
+<span class="fc" id="L238">                        entry.getKey();</span>
+
+<span class="fc" id="L240">                Document document =</span>
+<span class="fc" id="L241">                        documents.get(documentId);</span>
+
+<span class="pc bpc" id="L243" title="1 of 2 branches missed.">                if (document == null) {</span>
+<span class="nc" id="L244">                    continue;</span>
+                }
+
+<span class="fc bfc" id="L247" title="All 2 branches covered.">                if (!applyFilters(</span>
+                        document,
+                        categoryFilter,
+                        dateFilter)) {
+
+<span class="fc" id="L252">                    continue;</span>
+                }
+
+<span class="fc" id="L255">                int termFrequency =</span>
+<span class="fc" id="L256">                        entry.getValue();</span>
+
+<span class="fc" id="L258">                double tf =</span>
+                        (double) termFrequency
+<span class="fc" id="L260">                                / Math.max(</span>
+                                        1,
+<span class="fc" id="L262">                                        document.getTotalWords()</span>
+                                );
+
+<span class="fc" id="L265">                double tfIdf =</span>
+                        tf * idf;
+
+<span class="fc" id="L268">                scoreMap.merge(</span>
+                        documentId,
+<span class="fc" id="L270">                        tfIdf,</span>
+                        Double::sum
+                );
+<span class="fc" id="L273">            }</span>
+        }
+
+        /*
+         * Ordenamiento utilizando AVL.
+         */
+<span class="fc" id="L279">        AVLTree&lt;SearchResult&gt; tree =</span>
+                new AVLTree&lt;&gt;();
+
+        for (
+                Map.Entry&lt;String, Double&gt; entry
+<span class="fc bfc" id="L284" title="All 2 branches covered.">                : scoreMap.entrySet()) {</span>
+
+<span class="fc" id="L286">            Document document =</span>
+<span class="fc" id="L287">                    documents.get(</span>
+<span class="fc" id="L288">                            entry.getKey()</span>
+                    );
+
+<span class="pc bpc" id="L291" title="1 of 2 branches missed.">            if (document != null) {</span>
+
+<span class="fc" id="L293">                tree.insert(</span>
+                        new SearchResult(
+                                document,
+<span class="fc" id="L296">                                entry.getValue()</span>
+                        )
+                );
+            }
+<span class="fc" id="L300">        }</span>
+
+<span class="fc" id="L302">        return tree.inOrderTraversal();</span>
+    }
+
+    private boolean applyFilters(
+            Document document,
+            String categoryFilter,
+            LocalDate dateFilter) {
+
+<span class="fc" id="L310">        DocumentMetadata metadata =</span>
+<span class="fc" id="L311">                document.getMetadata();</span>
+
+<span class="fc bfc" id="L313" title="All 2 branches covered.">        if (categoryFilter != null</span>
+<span class="pc bpc" id="L314" title="1 of 2 branches missed.">                &amp;&amp; !categoryFilter.isBlank()</span>
+<span class="pc bpc" id="L315" title="1 of 2 branches missed.">                &amp;&amp; !categoryFilter.equalsIgnoreCase(</span>
+                        &quot;Todas&quot;
+        )) {
+
+<span class="pc bpc" id="L319" title="1 of 2 branches missed.">            if (metadata == null</span>
+<span class="pc bpc" id="L320" title="1 of 2 branches missed.">                    || metadata.category() == null</span>
+<span class="fc bfc" id="L321" title="All 2 branches covered.">                    || !categoryFilter.equalsIgnoreCase(</span>
+<span class="fc" id="L322">                            metadata.category()</span>
+                    )) {
+
+<span class="fc" id="L325">                return false;</span>
+            }
+        }
+
+<span class="pc bpc" id="L329" title="1 of 4 branches missed.">        if (dateFilter != null</span>
+                &amp;&amp; metadata != null
+<span class="pc bpc" id="L331" title="1 of 2 branches missed.">                &amp;&amp; metadata.creationDate() != null</span>
+<span class="fc" id="L332">                &amp;&amp; metadata.creationDate()</span>
+<span class="pc bpc" id="L333" title="1 of 2 branches missed.">                        .isBefore(dateFilter)) {</span>
+
+<span class="fc" id="L335">            return false;</span>
+        }
+
+<span class="fc" id="L338">        return true;</span>
+    }
+
+    /**
+     * Autocompletado.
+     */
+    public List&lt;String&gt; getAutocompleteSuggestions(
+            String prefix) {
+
+<span class="fc" id="L347">        String normalized =</span>
+<span class="fc" id="L348">                TextNormalizer.normalizeWord(</span>
+                        prefix
+                );
+
+<span class="fc bfc" id="L352" title="All 2 branches covered.">        if (normalized.isBlank()) {</span>
+<span class="fc" id="L353">            return Collections.emptyList();</span>
+        }
+
+<span class="fc" id="L356">        return trie</span>
+<span class="fc" id="L357">                .autocomplete(normalized)</span>
+<span class="fc" id="L358">                .stream()</span>
+<span class="fc" id="L359">                .filter(</span>
+                        word -&gt;
+<span class="fc" id="L361">                                !StopWordFilter</span>
+<span class="fc bfc" id="L362" title="All 2 branches covered.">                                        .isStopword(word)</span>
+                )
+<span class="fc" id="L364">                .limit(8)</span>
+<span class="fc" id="L365">                .toList();</span>
+    }
+
+    /**
+     * Obtiene las palabras más frecuentes del corpus,
+     * ignorando stopwords y números.
+     */
+    public List&lt;WordStat&gt; getTopWordFrequencies(
+            int topN) {
+
+<span class="fc bfc" id="L375" title="All 2 branches covered.">        if (topN &lt;= 0) {</span>
+<span class="fc" id="L376">            return Collections.emptyList();</span>
+        }
+
+<span class="fc" id="L379">        Map&lt;String, Integer&gt; counts =</span>
+                new HashMap&lt;&gt;();
+
+<span class="fc" id="L382">        collectFrequencies(</span>
+<span class="fc" id="L383">                trie.getRoot(),</span>
+                &quot;&quot;,
+                counts
+        );
+
+<span class="fc" id="L388">        List&lt;WordStat&gt; stats =</span>
+<span class="fc" id="L389">                counts.entrySet()</span>
+<span class="fc" id="L390">                        .stream()</span>
+<span class="fc" id="L391">                        .map(</span>
+                                entry -&gt;
+<span class="fc" id="L393">                                        new WordStat(</span>
+<span class="fc" id="L394">                                                entry.getKey(),</span>
+<span class="fc" id="L395">                                                entry.getValue()</span>
+                                        )
+                        )
+<span class="fc" id="L398">                        .sorted()</span>
+<span class="fc" id="L399">                        .toList();</span>
+
+<span class="fc" id="L401">        return stats</span>
+<span class="fc" id="L402">                .stream()</span>
+<span class="fc" id="L403">                .limit(topN)</span>
+<span class="fc" id="L404">                .toList();</span>
+    }
+
+    private void collectFrequencies(
+            TrieNode node,
+            String currentWord,
+            Map&lt;String, Integer&gt; counts) {
+
+<span class="fc bfc" id="L412" title="All 2 branches covered.">        if (node.isEndOfWord()</span>
+<span class="fc bfc" id="L413" title="All 2 branches covered.">                &amp;&amp; !StopWordFilter.isStopword(</span>
+                        currentWord
+                )) {
+
+<span class="fc" id="L417">            int total =</span>
+<span class="fc" id="L418">                    node.getDocumentFrequencies()</span>
+<span class="fc" id="L419">                            .values()</span>
+<span class="fc" id="L420">                            .stream()</span>
+<span class="fc" id="L421">                            .mapToInt(Integer::intValue)</span>
+<span class="fc" id="L422">                            .sum();</span>
+
+<span class="pc bpc" id="L424" title="1 of 2 branches missed.">            if (total &gt; 0) {</span>
+
+<span class="fc" id="L426">                counts.put(</span>
+                        currentWord,
+<span class="fc" id="L428">                        total</span>
+                );
+            }
+        }
+
+        for (
+                Map.Entry&lt;Character, TrieNode&gt; entry
+<span class="fc bfc" id="L435" title="All 2 branches covered.">                : node.getChildren().entrySet()) {</span>
+
+<span class="fc" id="L437">            collectFrequencies(</span>
+<span class="fc" id="L438">                    entry.getValue(),</span>
+<span class="fc" id="L439">                    currentWord + entry.getKey(),</span>
+                    counts
+            );
+<span class="fc" id="L442">        }</span>
+<span class="fc" id="L443">    }</span>
+
+    /**
+     * Obtiene categorías existentes.
+     */
+    public List&lt;String&gt; getCategories() {
+
+<span class="fc" id="L450">        return documents.values()</span>
+<span class="fc" id="L451">                .stream()</span>
+<span class="fc" id="L452">                .map(Document::getMetadata)</span>
+<span class="fc" id="L453">                .filter(Objects::nonNull)</span>
+<span class="fc" id="L454">                .map(DocumentMetadata::category)</span>
+<span class="fc" id="L455">                .filter(Objects::nonNull)</span>
+<span class="fc" id="L456">                .filter(category -&gt;</span>
+<span class="pc bpc" id="L457" title="1 of 2 branches missed.">                        !category.isBlank())</span>
+<span class="fc" id="L458">                .distinct()</span>
+<span class="fc" id="L459">                .sorted(</span>
+                        String.CASE_INSENSITIVE_ORDER
+                )
+<span class="fc" id="L462">                .toList();</span>
+    }
+
+    /**
+     * Devuelve documentos indexados.
+     */
+    public List&lt;Document&gt; getIndexedDocuments() {
+
+<span class="fc" id="L470">        return documents.values()</span>
+<span class="fc" id="L471">                .stream()</span>
+<span class="fc" id="L472">                .sorted(</span>
+<span class="fc" id="L473">                        Comparator.comparing(</span>
+                                Document::getTitle,
+                                String.CASE_INSENSITIVE_ORDER
+                        )
+                )
+<span class="fc" id="L478">                .toList();</span>
+    }
+
+    /**
+     * Desindexa un documento.
+     */
+    public boolean removeDocument(
+            String documentId) {
+
+<span class="fc bfc" id="L487" title="All 2 branches covered.">        if (documentId == null</span>
+<span class="pc bpc" id="L488" title="1 of 2 branches missed.">                || documentId.isBlank()) {</span>
+
+<span class="fc" id="L490">            return false;</span>
+        }
+
+<span class="fc" id="L493">        Document removed =</span>
+<span class="fc" id="L494">                documents.remove(</span>
+                        documentId
+                );
+
+<span class="fc bfc" id="L498" title="All 2 branches covered.">        if (removed == null) {</span>
+<span class="fc" id="L499">            return false;</span>
+        }
+
+<span class="fc" id="L502">        trie.removeDocument(</span>
+                documentId
+        );
+
+<span class="fc" id="L506">        persistState();</span>
+
+<span class="fc" id="L508">        return true;</span>
+    }
+
+    public int getDocumentCount() {
+<span class="fc" id="L512">        return documents.size();</span>
+    }
+
+    public int getTotalIndexedWords() {
+
+<span class="fc" id="L517">        return documents.values()</span>
+<span class="fc" id="L518">                .stream()</span>
+<span class="fc" id="L519">                .mapToInt(</span>
+                        Document::getTotalWords
+                )
+<span class="fc" id="L522">                .sum();</span>
+    }
+
+    private void persistState() {
+
+<span class="fc" id="L527">        indexRepository.save(</span>
+<span class="fc" id="L528">                TrieMapper.toDTO(trie)</span>
+        );
+
+<span class="fc" id="L531">        List&lt;DocumentDTO&gt; documentsDTO =</span>
+<span class="fc" id="L532">                documents.values()</span>
+<span class="fc" id="L533">                        .stream()</span>
+<span class="fc" id="L534">                        .map(</span>
+                                DocumentMapper::toDTO
+                        )
+<span class="fc" id="L537">                        .toList();</span>
+
+<span class="fc" id="L539">        metadataRepository.saveAll(</span>
+                new ArrayList&lt;&gt;(documentsDTO)
+        );
+<span class="fc" id="L542">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

@@ -1,0 +1,856 @@
+{
+  "root" : {
+    "children" : {
+      "a" : {
+        "children" : {
+          "c" : {
+            "children" : {
+              "a" : {
+                "children" : {
+                  "d" : {
+                    "children" : {
+                      "e" : {
+                        "children" : {
+                          "m" : {
+                            "children" : {
+                              "i" : {
+                                "children" : {
+                                  "c" : {
+                                    "children" : { },
+                                    "documentFrequencies" : {
+                                      "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                                    },
+                                    "endOfWord" : true
+                                  }
+                                },
+                                "documentFrequencies" : { },
+                                "endOfWord" : false
+                              }
+                            },
+                            "documentFrequencies" : { },
+                            "endOfWord" : false
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              },
+              "e" : {
+                "children" : {
+                  "v" : {
+                    "children" : {
+                      "e" : {
+                        "children" : {
+                          "d" : {
+                            "children" : {
+                              "o" : {
+                                "children" : { },
+                                "documentFrequencies" : {
+                                  "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                                },
+                                "endOfWord" : true
+                              }
+                            },
+                            "documentFrequencies" : { },
+                            "endOfWord" : false
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              }
+            },
+            "documentFrequencies" : { },
+            "endOfWord" : false
+          },
+          "v" : {
+            "children" : {
+              "e" : {
+                "children" : {
+                  "r" : {
+                    "children" : {
+                      "a" : {
+                        "children" : {
+                          "g" : {
+                            "children" : {
+                              "e" : {
+                                "children" : { },
+                                "documentFrequencies" : {
+                                  "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 2
+                                },
+                                "endOfWord" : true
+                              }
+                            },
+                            "documentFrequencies" : { },
+                            "endOfWord" : false
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              }
+            },
+            "documentFrequencies" : { },
+            "endOfWord" : false
+          }
+        },
+        "documentFrequencies" : { },
+        "endOfWord" : false
+      },
+      "b" : {
+        "children" : {
+          "r" : {
+            "children" : {
+              "a" : {
+                "children" : {
+                  "y" : {
+                    "children" : {
+                      "a" : {
+                        "children" : {
+                          "n" : {
+                            "children" : { },
+                            "documentFrequencies" : {
+                              "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                            },
+                            "endOfWord" : true
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              }
+            },
+            "documentFrequencies" : { },
+            "endOfWord" : false
+          }
+        },
+        "documentFrequencies" : { },
+        "endOfWord" : false
+      },
+      "c" : {
+        "children" : {
+          "o" : {
+            "children" : {
+              "d" : {
+                "children" : {
+                  "e" : {
+                    "children" : { },
+                    "documentFrequencies" : {
+                      "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                    },
+                    "endOfWord" : true
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              },
+              "u" : {
+                "children" : {
+                  "r" : {
+                    "children" : {
+                      "s" : {
+                        "children" : {
+                          "e" : {
+                            "children" : {
+                              "s" : {
+                                "children" : { },
+                                "documentFrequencies" : {
+                                  "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                                },
+                                "endOfWord" : true
+                              },
+                              "g" : {
+                                "children" : {
+                                  "r" : {
+                                    "children" : {
+                                      "a" : {
+                                        "children" : {
+                                          "d" : {
+                                            "children" : {
+                                              "e" : {
+                                                "children" : {
+                                                  "s" : {
+                                                    "children" : { },
+                                                    "documentFrequencies" : {
+                                                      "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                                                    },
+                                                    "endOfWord" : true
+                                                  }
+                                                },
+                                                "documentFrequencies" : { },
+                                                "endOfWord" : false
+                                              }
+                                            },
+                                            "documentFrequencies" : { },
+                                            "endOfWord" : false
+                                          }
+                                        },
+                                        "documentFrequencies" : { },
+                                        "endOfWord" : false
+                                      }
+                                    },
+                                    "documentFrequencies" : { },
+                                    "endOfWord" : false
+                                  }
+                                },
+                                "documentFrequencies" : { },
+                                "endOfWord" : false
+                              },
+                              "n" : {
+                                "children" : {
+                                  "a" : {
+                                    "children" : {
+                                      "m" : {
+                                        "children" : {
+                                          "e" : {
+                                            "children" : { },
+                                            "documentFrequencies" : {
+                                              "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                                            },
+                                            "endOfWord" : true
+                                          }
+                                        },
+                                        "documentFrequencies" : { },
+                                        "endOfWord" : false
+                                      }
+                                    },
+                                    "documentFrequencies" : { },
+                                    "endOfWord" : false
+                                  }
+                                },
+                                "documentFrequencies" : { },
+                                "endOfWord" : false
+                              }
+                            },
+                            "documentFrequencies" : { },
+                            "endOfWord" : false
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              }
+            },
+            "documentFrequencies" : { },
+            "endOfWord" : false
+          }
+        },
+        "documentFrequencies" : { },
+        "endOfWord" : false
+      },
+      "d" : {
+        "children" : {
+          "e" : {
+            "children" : { },
+            "documentFrequencies" : {
+              "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 2
+            },
+            "endOfWord" : true
+          }
+        },
+        "documentFrequencies" : { },
+        "endOfWord" : false
+      },
+      "e" : {
+        "children" : {
+          "l" : {
+            "children" : {
+              "e" : {
+                "children" : {
+                  "c" : {
+                    "children" : {
+                      "t" : {
+                        "children" : {
+                          "r" : {
+                            "children" : {
+                              "o" : {
+                                "children" : {
+                                  "n" : {
+                                    "children" : {
+                                      "i" : {
+                                        "children" : {
+                                          "c" : {
+                                            "children" : {
+                                              "a" : {
+                                                "children" : { },
+                                                "documentFrequencies" : {
+                                                  "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                                                },
+                                                "endOfWord" : true
+                                              }
+                                            },
+                                            "documentFrequencies" : { },
+                                            "endOfWord" : false
+                                          }
+                                        },
+                                        "documentFrequencies" : { },
+                                        "endOfWord" : false
+                                      }
+                                    },
+                                    "documentFrequencies" : { },
+                                    "endOfWord" : false
+                                  }
+                                },
+                                "documentFrequencies" : { },
+                                "endOfWord" : false
+                              }
+                            },
+                            "documentFrequencies" : { },
+                            "endOfWord" : false
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              }
+            },
+            "documentFrequencies" : { },
+            "endOfWord" : false
+          },
+          "n" : {
+            "children" : {
+              "r" : {
+                "children" : {
+                  "o" : {
+                    "children" : {
+                      "l" : {
+                        "children" : {
+                          "l" : {
+                            "children" : {
+                              "e" : {
+                                "children" : {
+                                  "d" : {
+                                    "children" : { },
+                                    "documentFrequencies" : {
+                                      "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                                    },
+                                    "endOfWord" : true
+                                  }
+                                },
+                                "documentFrequencies" : { },
+                                "endOfWord" : false
+                              }
+                            },
+                            "documentFrequencies" : { },
+                            "endOfWord" : false
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              }
+            },
+            "documentFrequencies" : { },
+            "endOfWord" : false
+          }
+        },
+        "documentFrequencies" : { },
+        "endOfWord" : false
+      },
+      "g" : {
+        "children" : {
+          "e" : {
+            "children" : {
+              "n" : {
+                "children" : {
+                  "e" : {
+                    "children" : {
+                      "r" : {
+                        "children" : {
+                          "a" : {
+                            "children" : {
+                              "l" : {
+                                "children" : { },
+                                "documentFrequencies" : {
+                                  "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                                },
+                                "endOfWord" : true
+                              }
+                            },
+                            "documentFrequencies" : { },
+                            "endOfWord" : false
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              }
+            },
+            "documentFrequencies" : { },
+            "endOfWord" : false
+          }
+        },
+        "documentFrequencies" : { },
+        "endOfWord" : false
+      },
+      "i" : {
+        "children" : {
+          "n" : {
+            "children" : {
+              "v" : {
+                "children" : {
+                  "e" : {
+                    "children" : {
+                      "s" : {
+                        "children" : {
+                          "t" : {
+                            "children" : {
+                              "i" : {
+                                "children" : {
+                                  "g" : {
+                                    "children" : {
+                                      "a" : {
+                                        "children" : {
+                                          "c" : {
+                                            "children" : {
+                                              "i" : {
+                                                "children" : {
+                                                  "o" : {
+                                                    "children" : {
+                                                      "n" : {
+                                                        "children" : { },
+                                                        "documentFrequencies" : {
+                                                          "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 2
+                                                        },
+                                                        "endOfWord" : true
+                                                      }
+                                                    },
+                                                    "documentFrequencies" : { },
+                                                    "endOfWord" : false
+                                                  }
+                                                },
+                                                "documentFrequencies" : { },
+                                                "endOfWord" : false
+                                              }
+                                            },
+                                            "documentFrequencies" : { },
+                                            "endOfWord" : false
+                                          }
+                                        },
+                                        "documentFrequencies" : { },
+                                        "endOfWord" : false
+                                      }
+                                    },
+                                    "documentFrequencies" : { },
+                                    "endOfWord" : false
+                                  }
+                                },
+                                "documentFrequencies" : { },
+                                "endOfWord" : false
+                              }
+                            },
+                            "documentFrequencies" : { },
+                            "endOfWord" : false
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              },
+              "g" : {
+                "children" : {
+                  "e" : {
+                    "children" : {
+                      "n" : {
+                        "children" : {
+                          "i" : {
+                            "children" : {
+                              "e" : {
+                                "children" : {
+                                  "r" : {
+                                    "children" : {
+                                      "i" : {
+                                        "children" : {
+                                          "a" : {
+                                            "children" : { },
+                                            "documentFrequencies" : {
+                                              "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                                            },
+                                            "endOfWord" : true
+                                          }
+                                        },
+                                        "documentFrequencies" : { },
+                                        "endOfWord" : false
+                                      }
+                                    },
+                                    "documentFrequencies" : { },
+                                    "endOfWord" : false
+                                  }
+                                },
+                                "documentFrequencies" : { },
+                                "endOfWord" : false
+                              }
+                            },
+                            "documentFrequencies" : { },
+                            "endOfWord" : false
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              }
+            },
+            "documentFrequencies" : { },
+            "endOfWord" : false
+          }
+        },
+        "documentFrequencies" : { },
+        "endOfWord" : false
+      },
+      "m" : {
+        "children" : {
+          "e" : {
+            "children" : {
+              "t" : {
+                "children" : {
+                  "o" : {
+                    "children" : {
+                      "d" : {
+                        "children" : {
+                          "o" : {
+                            "children" : {
+                              "l" : {
+                                "children" : {
+                                  "o" : {
+                                    "children" : {
+                                      "g" : {
+                                        "children" : {
+                                          "i" : {
+                                            "children" : {
+                                              "a" : {
+                                                "children" : { },
+                                                "documentFrequencies" : {
+                                                  "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 2
+                                                },
+                                                "endOfWord" : true
+                                              }
+                                            },
+                                            "documentFrequencies" : { },
+                                            "endOfWord" : false
+                                          }
+                                        },
+                                        "documentFrequencies" : { },
+                                        "endOfWord" : false
+                                      }
+                                    },
+                                    "documentFrequencies" : { },
+                                    "endOfWord" : false
+                                  }
+                                },
+                                "documentFrequencies" : { },
+                                "endOfWord" : false
+                              }
+                            },
+                            "documentFrequencies" : { },
+                            "endOfWord" : false
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              }
+            },
+            "documentFrequencies" : { },
+            "endOfWord" : false
+          }
+        },
+        "documentFrequencies" : { },
+        "endOfWord" : false
+      },
+      "0" : {
+        "children" : { },
+        "documentFrequencies" : {
+          "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 2
+        },
+        "endOfWord" : true
+      },
+      "p" : {
+        "children" : {
+          "r" : {
+            "children" : {
+              "o" : {
+                "children" : {
+                  "g" : {
+                    "children" : {
+                      "r" : {
+                        "children" : {
+                          "a" : {
+                            "children" : {
+                              "m" : {
+                                "children" : { },
+                                "documentFrequencies" : {
+                                  "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                                },
+                                "endOfWord" : true
+                              }
+                            },
+                            "documentFrequencies" : { },
+                            "endOfWord" : false
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              }
+            },
+            "documentFrequencies" : { },
+            "endOfWord" : false
+          }
+        },
+        "documentFrequencies" : { },
+        "endOfWord" : false
+      },
+      "2" : {
+        "children" : {
+          "0" : {
+            "children" : {
+              "2" : {
+                "children" : {
+                  "5" : {
+                    "children" : {
+                      "2" : {
+                        "children" : {
+                          "0" : {
+                            "children" : {
+                              "0" : {
+                                "children" : {
+                                  "0" : {
+                                    "children" : {
+                                      "1" : {
+                                        "children" : { },
+                                        "documentFrequencies" : {
+                                          "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                                        },
+                                        "endOfWord" : true
+                                      }
+                                    },
+                                    "documentFrequencies" : { },
+                                    "endOfWord" : false
+                                  }
+                                },
+                                "documentFrequencies" : { },
+                                "endOfWord" : false
+                              }
+                            },
+                            "documentFrequencies" : { },
+                            "endOfWord" : false
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              }
+            },
+            "documentFrequencies" : { },
+            "endOfWord" : false
+          }
+        },
+        "documentFrequencies" : {
+          "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 2
+        },
+        "endOfWord" : true
+      },
+      "r" : {
+        "children" : {
+          "e" : {
+            "children" : {
+              "p" : {
+                "children" : {
+                  "o" : {
+                    "children" : {
+                      "r" : {
+                        "children" : {
+                          "t" : {
+                            "children" : { },
+                            "documentFrequencies" : {
+                              "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+                            },
+                            "endOfWord" : true
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              }
+            },
+            "documentFrequencies" : { },
+            "endOfWord" : false
+          }
+        },
+        "documentFrequencies" : { },
+        "endOfWord" : false
+      },
+      "3" : {
+        "children" : { },
+        "documentFrequencies" : {
+          "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 2
+        },
+        "endOfWord" : true
+      },
+      "s" : {
+        "children" : {
+          "t" : {
+            "children" : {
+              "u" : {
+                "children" : {
+                  "d" : {
+                    "children" : {
+                      "e" : {
+                        "children" : {
+                          "n" : {
+                            "children" : {
+                              "t" : {
+                                "children" : { },
+                                "documentFrequencies" : {
+                                  "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 2
+                                },
+                                "endOfWord" : true
+                              }
+                            },
+                            "documentFrequencies" : { },
+                            "endOfWord" : false
+                          }
+                        },
+                        "documentFrequencies" : { },
+                        "endOfWord" : false
+                      }
+                    },
+                    "documentFrequencies" : { },
+                    "endOfWord" : false
+                  }
+                },
+                "documentFrequencies" : { },
+                "endOfWord" : false
+              }
+            },
+            "documentFrequencies" : { },
+            "endOfWord" : false
+          }
+        },
+        "documentFrequencies" : { },
+        "endOfWord" : false
+      },
+      "4" : {
+        "children" : { },
+        "documentFrequencies" : {
+          "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+        },
+        "endOfWord" : true
+      },
+      "7" : {
+        "children" : { },
+        "documentFrequencies" : {
+          "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 2
+        },
+        "endOfWord" : true
+      },
+      "9" : {
+        "children" : { },
+        "documentFrequencies" : {
+          "c4c9bca6-9b5d-4a20-b312-0c98ea0b09c2" : 1
+        },
+        "endOfWord" : true
+      }
+    },
+    "documentFrequencies" : { },
+    "endOfWord" : false
+  }
+}

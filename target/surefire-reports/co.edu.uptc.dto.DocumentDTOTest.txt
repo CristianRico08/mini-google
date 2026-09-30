@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: co.edu.uptc.dto.DocumentDTOTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.094 s -- in co.edu.uptc.dto.DocumentDTOTest

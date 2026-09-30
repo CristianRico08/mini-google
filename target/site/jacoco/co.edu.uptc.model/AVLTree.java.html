@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AVLTree.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">avl</a> &gt; <a href="index.source.html" class="el_package">co.edu.uptc.model</a> &gt; <span class="el_source">AVLTree.java</span></div><h1>AVLTree.java</h1><pre class="source lang-java linenums">package co.edu.uptc.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L6">public class AVLTree&lt;T extends Comparable&lt;T&gt;&gt; {</span>
+    private AVLNode&lt;T&gt; root;
+
+    public void insert(T data) {
+<span class="fc" id="L10">        root = insert(root, data);</span>
+<span class="fc" id="L11">    }</span>
+
+    private AVLNode&lt;T&gt; insert(AVLNode&lt;T&gt; node, T data) {
+<span class="fc bfc" id="L14" title="All 2 branches covered.">        if (node == null) return new AVLNode&lt;&gt;(data);</span>
+
+<span class="fc bfc" id="L16" title="All 2 branches covered.">        if (data.compareTo(node.getData()) &lt; 0) {</span>
+<span class="fc" id="L17">            node.setLeft(insert(node.getLeft(), data));</span>
+        } else {
+<span class="fc" id="L19">            node.setRight(insert(node.getRight(), data));</span>
+        }
+
+<span class="fc" id="L22">        updateHeight(node);</span>
+<span class="fc" id="L23">        return balance(node);</span>
+    }
+
+    public List&lt;T&gt; inOrderTraversal() {
+<span class="fc" id="L27">        List&lt;T&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L28">        inOrder(root, list);</span>
+<span class="fc" id="L29">        return list;</span>
+    }
+
+    private void inOrder(AVLNode&lt;T&gt; node, List&lt;T&gt; list) {
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        if (node != null) {</span>
+<span class="fc" id="L34">            inOrder(node.getLeft(), list);</span>
+<span class="fc" id="L35">            list.add(node.getData());</span>
+<span class="fc" id="L36">            inOrder(node.getRight(), list);</span>
+        }
+<span class="fc" id="L38">    }</span>
+
+    private int height(AVLNode&lt;T&gt; n) {
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        return n == null ? 0 : n.getHeight();</span>
+    }
+
+    private void updateHeight(AVLNode&lt;T&gt; n) {
+<span class="fc" id="L45">        n.setHeight(1 + Math.max(height(n.getLeft()), height(n.getRight())));</span>
+<span class="fc" id="L46">    }</span>
+
+    private int getBalance(AVLNode&lt;T&gt; n) {
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        return n == null ? 0 : height(n.getLeft()) - height(n.getRight());</span>
+    }
+
+    private AVLNode&lt;T&gt; balance(AVLNode&lt;T&gt; node) {
+<span class="fc" id="L53">        int balance = getBalance(node);</span>
+
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (balance &gt; 1) {</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">            if (getBalance(node.getLeft()) &lt; 0) {</span>
+<span class="fc" id="L57">                node.setLeft(rotateLeft(node.getLeft()));</span>
+            }
+<span class="fc" id="L59">            return rotateRight(node);</span>
+        }
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (balance &lt; -1) {</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            if (getBalance(node.getRight()) &gt; 0) {</span>
+<span class="fc" id="L63">                node.setRight(rotateRight(node.getRight()));</span>
+            }
+<span class="fc" id="L65">            return rotateLeft(node);</span>
+        }
+<span class="fc" id="L67">        return node;</span>
+    }
+
+    private AVLNode&lt;T&gt; rotateRight(AVLNode&lt;T&gt; y) {
+<span class="fc" id="L71">        AVLNode&lt;T&gt; x = y.getLeft();</span>
+<span class="fc" id="L72">        AVLNode&lt;T&gt; T2 = x.getRight();</span>
+<span class="fc" id="L73">        x.setRight(y);</span>
+<span class="fc" id="L74">        y.setLeft(T2);</span>
+<span class="fc" id="L75">        updateHeight(y);</span>
+<span class="fc" id="L76">        updateHeight(x);</span>
+<span class="fc" id="L77">        return x;</span>
+    }
+
+    private AVLNode&lt;T&gt; rotateLeft(AVLNode&lt;T&gt; x) {
+<span class="fc" id="L81">        AVLNode&lt;T&gt; y = x.getRight();</span>
+<span class="fc" id="L82">        AVLNode&lt;T&gt; T2 = y.getLeft();</span>
+<span class="fc" id="L83">        y.setLeft(x);</span>
+<span class="fc" id="L84">        x.setRight(T2);</span>
+<span class="fc" id="L85">        updateHeight(x);</span>
+<span class="fc" id="L86">        updateHeight(y);</span>
+<span class="fc" id="L87">        return y;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
