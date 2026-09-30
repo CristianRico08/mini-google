@@ -1,22 +1,27 @@
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\controller\MainController.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\model\Trie.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\dto\DocumentDTO.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\model\DocumentMetadata.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\mapper\TrieMapper.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\App.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\model\SearchResult.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\service\SearchEngineService.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\model\TrieNode.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\dto\DocumentMetadataDTO.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\exception\RepositoryException.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\model\WordStat.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\dto\TrieDTO.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\repository\JsonIndexRepository.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\repository\XmlMetadataRepository.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\util\TextNormalizer.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\model\AVLNode.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\model\AVLTree.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\util\FileTextExtractor.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\dto\TrieNodeDTO.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\model\Document.java
-C:\Users\Janus\mini-google\src\main\java\co\edu\uptc\mapper\DocumentMapper.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\service\SearchEngineService.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\dto\DocumentDTO.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\dto\DocumentMetadataDTO.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\exception\SearchEngineException.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\model\Document.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\repository\XmlMetadataRepository.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\model\AVLNode.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\model\WordStat.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\mapper\DocumentMapper.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\repository\JsonIndexRepository.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\controller\MainController.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\model\AVLTree.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\controller\IndexingReport.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\model\Trie.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\mapper\TrieMapper.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\util\TextNormalizer.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\App.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\model\DocumentMetadata.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\model\TrieNode.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\dto\TrieDTO.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\util\StopWordFilter.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\i18n\I18n.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\exception\RepositoryException.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\dto\TrieNodeDTO.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\view\MainViewController.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\model\SearchResult.java
+C:\Users\Usuario\Desktop\Haider\Programacion 3\Proyecto progra\mini-google\src\main\java\co\edu\uptc\util\FileTextExtractor.java

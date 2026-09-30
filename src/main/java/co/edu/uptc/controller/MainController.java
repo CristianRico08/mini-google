@@ -1,123 +1,153 @@
 package co.edu.uptc.controller;
 
-import java.io.File;
-import java.time.LocalDate;
-import java.util.List;
-
+import co.edu.uptc.exception.SearchEngineException;
+import co.edu.uptc.model.Document;
 import co.edu.uptc.model.SearchResult;
 import co.edu.uptc.model.WordStat;
 import co.edu.uptc.service.SearchEngineService;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Controlador de aplicación.
+ *
+ * No contiene componentes JavaFX.
+ * Coordina las operaciones entre la vista y el servicio.
+ */
 public class MainController {
 
-    @FXML private TextField txtSearch;
-    @FXML private ListView<String> lstAutocomplete;
-    @FXML private TableView<SearchResult> tblResults;
-    @FXML private TableColumn<SearchResult, String> colTitle;
-    @FXML private TableColumn<SearchResult, String> colPath;
-    @FXML private TableColumn<SearchResult, Double> colScore;
-    @FXML private ComboBox<String> cbCategory;
-    @FXML private DatePicker dpMinDate;
-    @FXML private ListView<String> lstWordCloud;
+    private final SearchEngineService searchService;
 
-    @FXML private TextField txtAuthor;
-    @FXML private TextField txtCategoryInput;
-
-    private SearchEngineService searchService;
-
-    @FXML
-    public void initialize() {
-        searchService = new SearchEngineService("data/index.json", "data/metadata.xml");
-
-        if (colTitle != null) colTitle.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDocument().getTitle()));
-        if (colPath != null) colPath.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDocument().getPath()));
-        if (colScore != null) colScore.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getScore()).asObject());
-
-        if (cbCategory != null) {
-            cbCategory.setItems(FXCollections.observableArrayList("Todas", "Noticias", "Artículos", "Apuntes"));
-            cbCategory.getSelectionModel().selectFirst();
-        }
-
-        if (txtSearch != null) {
-            txtSearch.textProperty().addListener((obs, oldText, newText) -> {
-                if (newText == null || newText.isBlank()) {
-                    if (lstAutocomplete != null) lstAutocomplete.getItems().clear();
-                } else {
-                    List<String> suggestions = searchService.getAutocompleteSuggestions(newText);
-                    if (lstAutocomplete != null) lstAutocomplete.setItems(FXCollections.observableArrayList(suggestions));
-                }
-            });
-        }
-
-        if (lstAutocomplete != null) {
-            lstAutocomplete.setOnMouseClicked(event -> {
-                String selected = lstAutocomplete.getSelectionModel().getSelectedItem();
-                if (selected != null) {
-                    txtSearch.setText(selected);
-                    lstAutocomplete.getItems().clear();
-                    onSearch();
-                }
-            });
-        }
-
-        updateWordCloud();
+    public MainController(String jsonIndexPath, String xmlMetadataPath) {
+        this(new SearchEngineService(jsonIndexPath, xmlMetadataPath));
     }
 
-    @FXML
-    public void onSearch() {
-        String query = txtSearch.getText();
-        String category = cbCategory != null ? cbCategory.getValue() : null;
-        LocalDate date = dpMinDate != null ? dpMinDate.getValue() : null;
-
-        List<SearchResult> results = searchService.search(query, category, date);
-        if (tblResults != null) {
-            tblResults.setItems(FXCollections.observableArrayList(results));
-        }
-    }
-
-    @FXML
-    public void onUploadFile() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(
-        new FileChooser.ExtensionFilter("Documentos Soportados (*.txt, *.pdf, *.docx)", "*.txt", "*.pdf", "*.docx")
+    public MainController(SearchEngineService searchService) {
+        if (searchService == null) {
+            throw new IllegalArgumentException(
+                    "El servicio de búsqueda no puede ser nulo."
             );
-         File selectedFile = fileChooser.showOpenDialog(null);
-        if (selectedFile != null) {
+        }
+
+        this.searchService = searchService;
+    }
+
+    /**
+     * Ejecuta una búsqueda.
+     */
+    public List<SearchResult> search(
+            String query,
+            String category,
+            LocalDate minDate) {
+
+        if (query == null || query.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        return searchService.search(query, category, minDate);
+    }
+
+    /**
+     * Obtiene sugerencias para autocompletar.
+     */
+    public List<String> getAutocompleteSuggestions(String prefix) {
+
+        if (prefix == null || prefix.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        return searchService.getAutocompleteSuggestions(prefix);
+    }
+
+    /**
+     * Indexa varios archivos.
+     */
+    public IndexingReport indexFiles(
+            List<File> files,
+            String author,
+            String category) {
+
+        if (files == null || files.isEmpty()) {
+            return new IndexingReport(0, 0, List.of());
+        }
+
+        int indexed = 0;
+        List<String> errors = new ArrayList<>();
+
+        for (File file : files) {
             try {
-                String author = txtAuthor != null && !txtAuthor.getText().isBlank() ? txtAuthor.getText() : "Anónimo";
-                String category = txtCategoryInput != null && !txtCategoryInput.getText().isBlank() ? txtCategoryInput.getText() : "General";
 
-                searchService.indexFile(selectedFile, author, category);
-                updateWordCloud();
+                searchService.indexFile(
+                        file,
+                        author,
+                        category
+                );
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Archivo indexado correctamente.");
-                alert.showAndWait();
-            } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Error al indexar el archivo: " + e.getMessage());
-                alert.showAndWait();
+                indexed++;
+
+            } catch (SearchEngineException | IllegalArgumentException e) {
+
+                String name =
+                        file == null
+                                ? "Archivo"
+                                : file.getName();
+
+                errors.add(
+                        name + ": " + e.getMessage()
+                );
             }
         }
+
+        return new IndexingReport(
+                indexed,
+                files.size(),
+                errors
+        );
     }
 
-    private void updateWordCloud() {
-        if (lstWordCloud != null) {
-            List<WordStat> topWords = searchService.getTopWordFrequencies(10);
-            List<String> formatted = topWords.stream()
-                    .map(w -> w.word() + " (" + w.frequency() + ")")
-                    .toList();
-            lstWordCloud.setItems(FXCollections.observableArrayList(formatted));
-        }
+    /**
+     * Obtiene los documentos actualmente indexados.
+     */
+    public List<Document> getIndexedDocuments() {
+        return searchService.getIndexedDocuments();
+    }
+
+    /**
+     * Elimina un documento del índice.
+     */
+    public boolean removeDocument(String documentId) {
+        return searchService.removeDocument(documentId);
+    }
+
+    /**
+     * Obtiene las categorías existentes.
+     */
+    public List<String> getCategories() {
+        return searchService.getCategories();
+    }
+
+    /**
+     * Obtiene las palabras más frecuentes.
+     */
+    public List<WordStat> getTopWordFrequencies(int topN) {
+        return searchService.getTopWordFrequencies(topN);
+    }
+
+    /**
+     * Cantidad de documentos indexados.
+     */
+    public int getDocumentCount() {
+        return searchService.getDocumentCount();
+    }
+
+    /**
+     * Cantidad total de palabras indexadas.
+     */
+    public int getTotalIndexedWords() {
+        return searchService.getTotalIndexedWords();
     }
 }

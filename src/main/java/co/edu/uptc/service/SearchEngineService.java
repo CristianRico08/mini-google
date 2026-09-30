@@ -1,15 +1,7 @@
 package co.edu.uptc.service;
 
-import java.io.File;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import co.edu.uptc.dto.DocumentDTO;
+import co.edu.uptc.exception.SearchEngineException;
 import co.edu.uptc.mapper.DocumentMapper;
 import co.edu.uptc.mapper.TrieMapper;
 import co.edu.uptc.model.AVLTree;
@@ -21,135 +13,531 @@ import co.edu.uptc.model.TrieNode;
 import co.edu.uptc.model.WordStat;
 import co.edu.uptc.repository.JsonIndexRepository;
 import co.edu.uptc.repository.XmlMetadataRepository;
+import co.edu.uptc.util.FileTextExtractor;
+import co.edu.uptc.util.StopWordFilter;
 import co.edu.uptc.util.TextNormalizer;
 
+import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+
+/**
+ * Servicio principal del motor de búsqueda.
+ */
 public class SearchEngineService {
 
     private final Trie trie;
+
     private final Map<String, Document> documents;
+
     private final JsonIndexRepository indexRepository;
+
     private final XmlMetadataRepository metadataRepository;
 
-    public SearchEngineService(String jsonIndexPath, String xmlMetadataPath) {
-        this.indexRepository = new JsonIndexRepository(jsonIndexPath);
-        this.metadataRepository = new XmlMetadataRepository(xmlMetadataPath);
+    public SearchEngineService(
+            String jsonIndexPath,
+            String xmlMetadataPath) {
 
-        this.trie = TrieMapper.toDomain(indexRepository.load());
-        this.documents = new HashMap<>();
+        this.indexRepository =
+                new JsonIndexRepository(
+                        jsonIndexPath
+                );
 
-        List<DocumentDTO> dtoList = metadataRepository.loadAll();
+        this.metadataRepository =
+                new XmlMetadataRepository(
+                        xmlMetadataPath
+                );
+
+        this.trie =
+                TrieMapper.toDomain(
+                        indexRepository.load()
+                );
+
+        this.documents =
+                new HashMap<>();
+
+        List<DocumentDTO> dtoList =
+                metadataRepository.loadAll();
+
         for (DocumentDTO dto : dtoList) {
-            Document doc = DocumentMapper.toDomain(dto);
-            this.documents.put(doc.getId(), doc);
-        }
-    }
 
-    public void indexFile(File file, String author, String category) throws Exception {
-        String content = co.edu.uptc.util.FileTextExtractor.extractText(file);
-        String[] tokens = TextNormalizer.normalizeAndTokenize(content);
+            Document document =
+                    DocumentMapper.toDomain(dto);
 
-        String docId = UUID.randomUUID().toString();
-        DocumentMetadata metadata = new DocumentMetadata(author, category, LocalDate.now());
-        Document doc = new Document(docId, file.getName(), file.getAbsolutePath(), tokens.length, metadata);
+            if (document != null
+                    && document.getId() != null) {
 
-        documents.put(docId, doc);
-
-        for (String token : tokens) {
-            if (!token.isBlank()) {
-                trie.insert(token, docId);
+                documents.put(
+                        document.getId(),
+                        document
+                );
             }
         }
-
-        persistState();
     }
 
-    public List<SearchResult> search(String query, String categoryFilter, LocalDate dateFilter) {
-        String[] queryTokens = TextNormalizer.normalizeAndTokenize(query);
-        if (queryTokens.length == 0 || documents.isEmpty()) {
+    /**
+     * Indexa un archivo.
+     */
+    public void indexFile(
+            File file,
+            String author,
+            String category) {
+
+        if (file == null) {
+
+            throw new SearchEngineException(
+                    "El archivo no puede ser nulo."
+            );
+        }
+
+        if (!file.isFile()) {
+
+            throw new SearchEngineException(
+                    "El archivo seleccionado no es válido."
+            );
+        }
+
+        try {
+
+            String content =
+                    FileTextExtractor.extractText(file);
+
+            String[] tokens =
+                    TextNormalizer
+                            .normalizeAndTokenize(
+                                    content
+                            );
+
+            String documentId =
+                    UUID.randomUUID().toString();
+
+            DocumentMetadata metadata =
+                    new DocumentMetadata(
+
+                            author == null
+                                    || author.isBlank()
+                                    ? "Anónimo"
+                                    : author,
+
+                            category == null
+                                    || category.isBlank()
+                                    ? "General"
+                                    : category,
+
+                            LocalDate.now()
+                    );
+
+            Document document =
+                    new Document(
+
+                            documentId,
+
+                            file.getName(),
+
+                            file.getAbsolutePath(),
+
+                            tokens.length,
+
+                            metadata
+                    );
+
+            documents.put(
+                    documentId,
+                    document
+            );
+
+            for (String token : tokens) {
+
+                if (!token.isBlank()) {
+
+                    trie.insert(
+                            token,
+                            documentId
+                    );
+                }
+            }
+
+            persistState();
+
+        } catch (SearchEngineException e) {
+
+            throw e;
+
+        } catch (Exception e) {
+
+            throw new SearchEngineException(
+                    "No fue posible indexar el archivo: "
+                            + file.getName(),
+                    e
+            );
+        }
+    }
+
+    /**
+     * Busca utilizando TF-IDF.
+     */
+    public List<SearchResult> search(
+            String query,
+            String categoryFilter,
+            LocalDate dateFilter) {
+
+        String[] queryTokens =
+                TextNormalizer
+                        .normalizeAndTokenize(query);
+
+        if (queryTokens.length == 0
+                || documents.isEmpty()) {
+
             return Collections.emptyList();
         }
 
-        Map<String, Double> scoreMap = new HashMap<>();
-        int totalDocs = documents.size();
+        Map<String, Double> scoreMap =
+                new HashMap<>();
+
+        int totalDocuments =
+                documents.size();
 
         for (String token : queryTokens) {
-            Map<String, Integer> docFreqs = trie.getDocumentFrequencies(token);
-            if (docFreqs.isEmpty()) continue;
 
-            int docsContainingToken = docFreqs.size();
-            double idf = Math.log((double) totalDocs / docsContainingToken) + 1.0;
+            /*
+             * No procesar stopwords como
+             * términos de búsqueda.
+             */
+            if (StopWordFilter.isStopword(token)) {
+                continue;
+            }
 
-            for (Map.Entry<String, Integer> entry : docFreqs.entrySet()) {
-                String docId = entry.getKey();
-                int termFreq = entry.getValue();
+            Map<String, Integer> documentFrequencies =
+                    trie.getDocumentFrequencies(token);
 
-                Document doc = documents.get(docId);
-                if (doc == null || !applyFilters(doc, categoryFilter, dateFilter)) {
+            if (documentFrequencies.isEmpty()) {
+                continue;
+            }
+
+            int documentsWithToken =
+                    documentFrequencies.size();
+
+            double idf =
+                    Math.log(
+                            (double) totalDocuments
+                                    / documentsWithToken
+                    ) + 1.0;
+
+            for (
+                    Map.Entry<String, Integer> entry
+                    : documentFrequencies.entrySet()) {
+
+                String documentId =
+                        entry.getKey();
+
+                Document document =
+                        documents.get(documentId);
+
+                if (document == null) {
                     continue;
                 }
 
-                double tf = (double) termFreq / doc.getTotalWords();
-                double tfIdf = tf * idf;
+                if (!applyFilters(
+                        document,
+                        categoryFilter,
+                        dateFilter)) {
 
-                scoreMap.merge(docId, tfIdf, Double::sum);
+                    continue;
+                }
+
+                int termFrequency =
+                        entry.getValue();
+
+                double tf =
+                        (double) termFrequency
+                                / Math.max(
+                                        1,
+                                        document.getTotalWords()
+                                );
+
+                double tfIdf =
+                        tf * idf;
+
+                scoreMap.merge(
+                        documentId,
+                        tfIdf,
+                        Double::sum
+                );
             }
         }
 
-        AVLTree<SearchResult> avlTree = new AVLTree<>();
-        for (Map.Entry<String, Double> entry : scoreMap.entrySet()) {
-            Document doc = documents.get(entry.getKey());
-            avlTree.insert(new SearchResult(doc, entry.getValue()));
+        /*
+         * Ordenamiento utilizando AVL.
+         */
+        AVLTree<SearchResult> tree =
+                new AVLTree<>();
+
+        for (
+                Map.Entry<String, Double> entry
+                : scoreMap.entrySet()) {
+
+            Document document =
+                    documents.get(
+                            entry.getKey()
+                    );
+
+            if (document != null) {
+
+                tree.insert(
+                        new SearchResult(
+                                document,
+                                entry.getValue()
+                        )
+                );
+            }
         }
 
-        return avlTree.inOrderTraversal();
+        return tree.inOrderTraversal();
     }
 
-    private boolean applyFilters(Document doc, String categoryFilter, LocalDate dateFilter) {
-        if (categoryFilter != null && !categoryFilter.isBlank() && !categoryFilter.equalsIgnoreCase("Todas")) {
-            if (doc.getMetadata() == null || !categoryFilter.equalsIgnoreCase(doc.getMetadata().category())) {
+    private boolean applyFilters(
+            Document document,
+            String categoryFilter,
+            LocalDate dateFilter) {
+
+        DocumentMetadata metadata =
+                document.getMetadata();
+
+        if (categoryFilter != null
+                && !categoryFilter.isBlank()
+                && !categoryFilter.equalsIgnoreCase(
+                        "Todas"
+        )) {
+
+            if (metadata == null
+                    || metadata.category() == null
+                    || !categoryFilter.equalsIgnoreCase(
+                            metadata.category()
+                    )) {
+
                 return false;
             }
         }
-        if (dateFilter != null && doc.getMetadata() != null && doc.getMetadata().creationDate() != null) {
-            if (doc.getMetadata().creationDate().isBefore(dateFilter)) {
-                return false;
-            }
+
+        if (dateFilter != null
+                && metadata != null
+                && metadata.creationDate() != null
+                && metadata.creationDate()
+                        .isBefore(dateFilter)) {
+
+            return false;
         }
+
         return true;
     }
 
-    public List<String> getAutocompleteSuggestions(String prefix) {
-        String normalized = TextNormalizer.normalizeWord(prefix);
-        if (normalized.isBlank()) return Collections.emptyList();
-        return trie.autocomplete(normalized);
+    /**
+     * Autocompletado.
+     */
+    public List<String> getAutocompleteSuggestions(
+            String prefix) {
+
+        String normalized =
+                TextNormalizer.normalizeWord(
+                        prefix
+                );
+
+        if (normalized.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        return trie
+                .autocomplete(normalized)
+                .stream()
+                .filter(
+                        word ->
+                                !StopWordFilter
+                                        .isStopword(word)
+                )
+                .limit(8)
+                .toList();
     }
 
-    public List<WordStat> getTopWordFrequencies(int topN) {
-        Map<String, Integer> wordCounts = new HashMap<>();
-        collectFrequencies(trie.getRoot(), "", wordCounts);
+    /**
+     * Obtiene las palabras más frecuentes del corpus,
+     * ignorando stopwords y números.
+     */
+    public List<WordStat> getTopWordFrequencies(
+            int topN) {
 
-        List<WordStat> stats = new ArrayList<>();
-        wordCounts.forEach((word, count) -> stats.add(new WordStat(word, count)));
-        stats.sort(Collections.reverseOrder());
+        if (topN <= 0) {
+            return Collections.emptyList();
+        }
 
-        return stats.stream().limit(topN).toList();
+        Map<String, Integer> counts =
+                new HashMap<>();
+
+        collectFrequencies(
+                trie.getRoot(),
+                "",
+                counts
+        );
+
+        List<WordStat> stats =
+                counts.entrySet()
+                        .stream()
+                        .map(
+                                entry ->
+                                        new WordStat(
+                                                entry.getKey(),
+                                                entry.getValue()
+                                        )
+                        )
+                        .sorted()
+                        .toList();
+
+        return stats
+                .stream()
+                .limit(topN)
+                .toList();
     }
 
-    private void collectFrequencies(TrieNode node, String currentWord, Map<String, Integer> counts) {
-        if (node.isEndOfWord()) {
-            int total = node.getDocumentFrequencies().values().stream().mapToInt(Integer::intValue).sum();
-            counts.put(currentWord, total);
+    private void collectFrequencies(
+            TrieNode node,
+            String currentWord,
+            Map<String, Integer> counts) {
+
+        if (node.isEndOfWord()
+                && !StopWordFilter.isStopword(
+                        currentWord
+                )) {
+
+            int total =
+                    node.getDocumentFrequencies()
+                            .values()
+                            .stream()
+                            .mapToInt(Integer::intValue)
+                            .sum();
+
+            if (total > 0) {
+
+                counts.put(
+                        currentWord,
+                        total
+                );
+            }
         }
-        for (Map.Entry<Character, TrieNode> entry : node.getChildren().entrySet()) {
-            collectFrequencies(entry.getValue(), currentWord + entry.getKey(), counts);
+
+        for (
+                Map.Entry<Character, TrieNode> entry
+                : node.getChildren().entrySet()) {
+
+            collectFrequencies(
+                    entry.getValue(),
+                    currentWord + entry.getKey(),
+                    counts
+            );
         }
+    }
+
+    /**
+     * Obtiene categorías existentes.
+     */
+    public List<String> getCategories() {
+
+        return documents.values()
+                .stream()
+                .map(Document::getMetadata)
+                .filter(Objects::nonNull)
+                .map(DocumentMetadata::category)
+                .filter(Objects::nonNull)
+                .filter(category ->
+                        !category.isBlank())
+                .distinct()
+                .sorted(
+                        String.CASE_INSENSITIVE_ORDER
+                )
+                .toList();
+    }
+
+    /**
+     * Devuelve documentos indexados.
+     */
+    public List<Document> getIndexedDocuments() {
+
+        return documents.values()
+                .stream()
+                .sorted(
+                        Comparator.comparing(
+                                Document::getTitle,
+                                String.CASE_INSENSITIVE_ORDER
+                        )
+                )
+                .toList();
+    }
+
+    /**
+     * Desindexa un documento.
+     */
+    public boolean removeDocument(
+            String documentId) {
+
+        if (documentId == null
+                || documentId.isBlank()) {
+
+            return false;
+        }
+
+        Document removed =
+                documents.remove(
+                        documentId
+                );
+
+        if (removed == null) {
+            return false;
+        }
+
+        trie.removeDocument(
+                documentId
+        );
+
+        persistState();
+
+        return true;
+    }
+
+    public int getDocumentCount() {
+        return documents.size();
+    }
+
+    public int getTotalIndexedWords() {
+
+        return documents.values()
+                .stream()
+                .mapToInt(
+                        Document::getTotalWords
+                )
+                .sum();
     }
 
     private void persistState() {
-        indexRepository.save(TrieMapper.toDTO(trie));
-        List<DocumentDTO> dtoList = documents.values().stream()
-                .map(DocumentMapper::toDTO)
-                .toList();
-        metadataRepository.saveAll(dtoList);
+
+        indexRepository.save(
+                TrieMapper.toDTO(trie)
+        );
+
+        List<DocumentDTO> documentsDTO =
+                documents.values()
+                        .stream()
+                        .map(
+                                DocumentMapper::toDTO
+                        )
+                        .toList();
+
+        metadataRepository.saveAll(
+                new ArrayList<>(documentsDTO)
+        );
     }
 }
